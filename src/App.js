@@ -6,6 +6,7 @@ import Navbar from './Components/shared/Navbar';
 import TicTacToe from './Components/ticTacToe/TicTacToe';
 import MorseCodeConverter from './Components/MorseCodeConverter';
 import Docs from './Components/Docs';
+import YoutubeWatch from './Components/YoutubeWatch';
 
 function App() {
   return (
@@ -18,7 +19,9 @@ function App() {
           <Route path="/tictactoe" element={<TicTacToe />} />
           <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
           <Route path="/docs" element={<Docs />} />
+          <Route path="/yt" element={<YoutubeWatch />} />
         </Routes>
+
       </div>
 
       {/* <SudokuSolver /> */}

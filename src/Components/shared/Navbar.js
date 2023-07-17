@@ -32,6 +32,11 @@ const Navbar = () => {
                 <li><NavLink className={({ isActive, isPending }) =>
                     isPending ? "pending" : isActive ? active : ""
                 }
+                    to="/yt">Youtube watch </NavLink>
+                </li>
+                <li><NavLink className={({ isActive, isPending }) =>
+                    isPending ? "pending" : isActive ? active : ""
+                }
                     to="/convert/morsecode">Morse Code  </NavLink>
                 </li>
                 <li><NavLink className={({ isActive, isPending }) =>
