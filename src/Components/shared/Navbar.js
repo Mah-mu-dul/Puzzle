@@ -47,7 +47,7 @@ const Navbar = () => {
                 <li><NavLink className={({ isActive, isPending }) =>
                     isPending ? "pending" : isActive ? active : ""
                 }
-                    to="aiub-cg">Calcuate CG</NavLink>
+                    to="calculate-cg">Calcuate CG</NavLink>
                 </li>
             </ul >
         </div >

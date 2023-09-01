@@ -6,22 +6,24 @@ const initialRows = [
     { courseName: '', grade: '4.00', credits: '' },
 ];
 
-const gradeOptions = [
-    { value: '4.00', label: 'A+' },
-    { value: '3.75', label: 'A' },
-    { value: '3.50', label: 'B+' },
-    { value: '3.25', label: 'B' },
-    { value: '3.00', label: 'C+' },
-    { value: '2.75', label: 'C' },
-    { value: '2.50', label: 'D+' },
-    { value: '2.25', label: 'D' },
-    { value: '0.00', label: 'F' },
-    { value: '0', label: 'I' },
-];
 
-function AIUBCG() {
+
+function CalculateCg() {
+    const [gradeOptions, setGradeOptions] = useState([
+        { value: '4.00', label: 'A	' },
+        { value: '3.7', label: 'A-' },
+        { value: '3.3', label: 'B+' },
+        { value: '3.0', label: 'B	' },
+        { value: '2.7', label: 'B-' },
+        { value: '2.3', label: 'C+' },
+        { value: '2.0', label: 'C	' },
+        { value: '1.7', label: 'C-' },
+        { value: '1.3', label: 'D+' },
+        { value: '1', label: 'D	' },
+    ])
     const [rows, setRows] = useState(initialRows);
     const [previousCGPA, setPreviousCGPA] = useState('');
+    const [uName, setUName] = useState('Independent University, Bangladesh');
     const [previousEarnedCredit, setPreviousEarnedCredit] = useState('');
 
     useEffect(() => {
@@ -57,8 +59,96 @@ function AIUBCG() {
 
         return totalCredits;
     };
+    const handleUniversity = (e) => {
 
+        if (e.target.value === "iub") {
+            setGradeOptions([
+                { value: '4.00', label: 'A' },
+                { value: '3.7', label: 'A-' },
+                { value: '3.3', label: 'B+' },
+                { value: '3.0', label: 'B   ' },
+                { value: '2.7', label: 'B-' },
+                { value: '2.3', label: 'C+' },
+                { value: '2.0', label: 'C' },
+                { value: '1.7', label: 'C-' },
+                { value: '1.3', label: 'D+' },
+                { value: '1.0', label: 'D' },
+                { value: '0.0', label: 'F' },
+            ])
+            setUName("Independent University, Bangladesh.")
+
+
+        } else if (e.target.value === "aiub") {
+            setGradeOptions([
+                { value: '4.00', label: 'A+' },
+                { value: '3.75', label: 'A' },
+                { value: '3.50', label: 'B+' },
+                { value: '3.25', label: 'B' },
+                { value: '3.00', label: 'C+' },
+                { value: '2.75', label: 'C' },
+                { value: '2.50', label: 'D+' },
+                { value: '2.25', label: 'D' },
+                { value: '0.00', label: 'F' },
+                { value: '0', label: 'I' },
+            ])
+
+            setUName("American International University - Bangladesh")
+
+        } else if (e.target.value === "nsu") {
+            setGradeOptions([
+                { value: '4.00', label: 'A' },
+                { value: '3.7', label: 'A-' },
+                { value: '3.3', label: 'B+' },
+                { value: '3.0', label: 'B   ' },
+                { value: '2.7', label: 'B-' },
+                { value: '2.3', label: 'C+' },
+                { value: '2.0', label: 'C' },
+                { value: '1.7', label: 'C-' },
+                { value: '1.3', label: 'D+' },
+                { value: '1.0', label: 'D' },
+                { value: '0.0', label: 'F' },
+
+            ])
+            setUName("North South University")
+
+
+        } else if (e.target.value === "diu") {
+            setGradeOptions([
+                { value: '4.00', label: 'A+' },
+                { value: '3.75', label: 'A' },
+                { value: '3.50', label: 'A-' },
+                { value: '3.25', label: 'B+' },
+                { value: '3.00', label: 'B' },
+                { value: '2.75', label: 'B-' },
+                { value: '2.50', label: 'C+' },
+                { value: '2.25', label: 'C' },
+                { value: '2.00', label: 'D' },
+                { value: '0', label: 'F' },
+            ])
+            setUName("Daffodil International University")
+
+        } else if (e.target.value === "ewu") {
+            setGradeOptions([
+                { value: '4.00', label: 'A+' },
+                { value: '4.00', label: 'A' },
+                { value: '3.70', label: 'A-' },
+                { value: '3.3', label: 'B+' },
+                { value: '3.00', label: 'B' },
+                { value: '2.7', label: 'B-' },
+                { value: '2.3', label: 'C+' },
+                { value: '2.0', label: 'C' },
+                { value: '1.7', label: 'C-' },
+                { value: '1.3', label: 'D+' },
+                { value: '1', label: 'D' },
+                { value: '0', label: 'F' },
+            ])
+            setUName("East West University")
+        }
+
+
+    }
     const calculateCGPA = () => {
+
         let totalCredits = 0;
         let totalGradePoints = 0;
 
@@ -86,13 +176,33 @@ function AIUBCG() {
 
         const cgpa = (totalGradePoints / totalCredits).toFixed(2);
         return cgpa;
+
+
+
     };
 
-    return (
+    return (<>
+        <p className='text-rose-600 font-bold text-lg w-fit mx-auto mb-10' id="label">{uName}</p>
         <div className='w-fit lg:mx-auto md:mx-auto sm:mx-3 relative '>
-            <div className=' right-0'>
-                <strong>CGPA: {calculateCGPA()}</strong> <br />
-                <strong>Total Earned Credit: {calculateTotalEarnedCredit()}</strong>
+            <div className=' flex justify-between'>
+                <span>
+                    <strong>CGPA: {calculateCGPA()}</strong> <br />
+                    <strong>Total Earned Credit: {calculateTotalEarnedCredit()}</strong>
+                </span>
+                <span>
+                    <select
+                        className='bg-gray-200 p-2  rounded border-0'
+                        name=""
+                        onChange={(e) => handleUniversity(e)}
+                        id="">
+                        <option value="iub">IUB</option>
+                        <option value="aiub">AIUB</option>
+                        <option value="nsu">NSU</option>
+                        <option value="diu">DIU</option>
+                        <option value="ewu">EWU</option>
+                    </select>
+
+                </span>
             </div>
 
             <br />
@@ -172,7 +282,8 @@ function AIUBCG() {
 
             <button className='bg-transparent px-3 py-1 mt-3 hover:bg-amber-200 border-2 rounded' onClick={addRow}>Add Row</button>
         </div>
+    </>
     );
 }
 
-export default AIUBCG;
+export default CalculateCg;
