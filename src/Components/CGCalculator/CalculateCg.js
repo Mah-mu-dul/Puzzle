@@ -143,6 +143,21 @@ function CalculateCg() {
                 { value: '0', label: 'F' },
             ])
             setUName("East West University")
+        } else if (e.target.value === "uiu") {
+            setGradeOptions([
+                { value: '4.00', label: 'A' },
+                { value: '3.67', label: 'A-' },
+                { value: '3.33', label: 'B+' },
+                { value: '3', label: 'B' },
+                { value: '2.67', label: 'B-' },
+                { value: '2.33', label: 'C+' },
+                { value: '2.0', label: 'C' },
+                { value: '1.67', label: 'C-' },
+                { value: '1.33', label: 'D+' },
+                { value: '1', label: 'D' },
+                { value: '0', label: 'F' },
+            ])
+            setUName("United International University")
         }
 
 
@@ -186,12 +201,12 @@ function CalculateCg() {
         <div className='w-fit lg:mx-auto md:mx-auto sm:mx-3 relative '>
             <div className=' flex justify-between'>
                 <span>
-                    <strong>CGPA: {calculateCGPA()}</strong> <br />
-                    <strong>Total Earned Credit: {calculateTotalEarnedCredit()}</strong>
+                    <strong>CGPA: <span className='text-rose-600'>{calculateCGPA()}</span></strong> <br />
+                    <strong>Total Earned Credit: <span className='text-rose-600'>{calculateTotalEarnedCredit()}</span></strong>
                 </span>
                 <span>
                     <select
-                        className='bg-gray-200 p-2  rounded border-0'
+                        className='bg-transparent p-2  rounded border-2 border-rose-400'
                         name=""
                         onChange={(e) => handleUniversity(e)}
                         id="">
@@ -200,6 +215,7 @@ function CalculateCg() {
                         <option value="nsu">NSU</option>
                         <option value="diu">DIU</option>
                         <option value="ewu">EWU</option>
+                        <option value="uiu">UIU</option>
                     </select>
 
                 </span>
@@ -210,7 +226,7 @@ function CalculateCg() {
             <div>
                 <label htmlFor="previousCGPA">Previous CGPA:</label>
                 <input
-                    className='bg-gray-200 px-2 w-20 ml-2 rounded border-0 '
+                    className='bg-transparent px-2 w-20 ml-2 rounded border-2 border-rose-400 '
                     type="number"
                     id="previousCGPA"
                     value={previousCGPA}
@@ -221,7 +237,7 @@ function CalculateCg() {
             <div>
                 <label htmlFor="previousEarnedCredit">Previous Earned Credit:</label>
                 <input
-                    className='bg-gray-200 px-2 w-20 ml-2 my-1 rounded border-0 '
+                    className='bg-transparent px-2 w-20 ml-2 my-1 rounded border-2 border-rose-400 '
                     type="number"
                     id="previousEarnedCredit"
                     value={previousEarnedCredit}
@@ -242,8 +258,9 @@ function CalculateCg() {
                         <tr key={index}>
                             <td>
                                 <input
-                                    className='bg-gray-200 px-2 lg:w-48 sm:w-36 rounded border-0 '
+                                    className='bg-transparent px-2 lg:w-48 sm:w-36 rounded border-2 border-rose-400 '
                                     type="text"
+                                    placeholder='Course Name'
                                     name="courseName"
                                     value={row.courseName}
                                     onChange={(e) => handleChange(e, index)}
@@ -251,10 +268,9 @@ function CalculateCg() {
                             </td>
                             <td>
                                 <input
-                                    className='bg-gray-200 rounded mx-5 border-0  w-20 px-2'
+                                    className='bg-transparent rounded mx-5 border-2 border-rose-400  w-20 px-2'
                                     type="number"
-                                    min="0"
-                                    max="5"
+                                    placeholder='Credits'
                                     name="credits"
                                     value={row.credits}
                                     onChange={(e) => handleChange(e, index)}
@@ -262,7 +278,7 @@ function CalculateCg() {
                             </td>
                             <td>
                                 <select
-                                    className='bg-gray-200 px-2  rounded border-0'
+                                    className='bg-transparent px-2  rounded border-2 border-rose-400'
                                     name="grade"
                                     value={row.grade}
                                     onChange={(e) => handleChange(e, index)}
@@ -280,7 +296,7 @@ function CalculateCg() {
                 </tbody>
             </table>
 
-            <button className='bg-transparent px-3 py-1 mt-3 hover:bg-amber-200 border-2 rounded' onClick={addRow}>Add Row</button>
+            <button className='bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded' onClick={addRow}>Add Row</button>
         </div>
     </>
     );
