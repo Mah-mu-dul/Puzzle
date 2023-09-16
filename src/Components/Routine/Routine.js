@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
+
+// total time slots
 const times = [
     "08:00-09:30",
     "09:40-11:10",
@@ -11,9 +13,9 @@ const times = [
 ];
 
 const daySlots = [
-    { value: "st", label: "ST (Sat & Sun)" },
+    { value: "st", label: "ST (Sun & Tue)" },
     { value: "mw", label: "MW (Mon & Wed)" },
-    { value: "ar", label: "AR (Sun, Tue, Thu)" },
+    { value: "ar", label: "AR (Sat & Thu)" },
     { value: "Sunday", label: "Sunday" },
     { value: "Monday", label: "Monday" },
     { value: "Tuesday", label: "Tuesday" },
@@ -69,9 +71,9 @@ const Routine = () => {
     };
 
     return (
-        <div className="p-4 sm:overflow-auto lg:overflow-hidden w-full ">
+        <div className="p-4  w-full ">
             <h2 className="text-2xl mb-4 w-fit mx-auto text-rose-600">Make your course plan </h2>
-            <h2 className="text-2xl mb-4 w-fit mx-auto lg:hidden md:hidden text-center text-rose-600">For better view use Computer screen</h2>
+            <h2 className="text-sm mb-4 w-fit mx-auto lg:hidden md:hidden text-center text-rose-600">For better view use Computer screen</h2>
             <div className="flex flex-col justify-center place-items-center">
                 <div className="lg:block md:flex sm:flex flex-wrap justify-center items-center w-fit gap-3  ">
                     <input
@@ -108,36 +110,38 @@ const Routine = () => {
                 </div>
                 <br />
                 <button onClick={handleAddCourse}
-                    className="bg-blue-500 text-white p-2 mt-2 rounded-lg">
+                    className="bg-rose-500 text-white p-2 mt-2 rounded-lg">
                     Add Course
                 </button>
             </div>
-            <table className="table-auto rounded-md mt-5 mx-auto">
-                <thead>
-                    <tr>
-                        <th className="border border-rose-400  px-4 py-2"></th>
-                        {times.map((time) => (
-                            <th key={time} className="border border-rose-400  px-4 py-2">
-                                {format12HourWithoutAMPM(time)}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {daySlots.slice(3).map((daySlot) => (
-                        <tr key={daySlot.value}>
-                            <td className="border border-rose-400  px-4 py-2">{daySlot.label}</td>
+            <div className="sm:overflow-auto lg:overflow-hidden">
+                <table className="table-auto rounded-md mt-5 mx-auto">
+                    <thead>
+                        <tr>
+                            <th className="border border-rose-400  px-4 py-2"></th>
                             {times.map((time) => (
-                                <td key={time} className="border border-rose-400  px-4 py-2">
-                                    {routine[daySlot.value] &&
-                                        routine[daySlot.value].find((item) => item.time === time) &&
-                                        routine[daySlot.value].find((item) => item.time === time).course}
-                                </td>
+                                <th key={time} className="border border-rose-400  px-4 py-2">
+                                    {format12HourWithoutAMPM(time)}
+                                </th>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {daySlots.slice(3).map((daySlot) => (
+                            <tr key={daySlot.value}>
+                                <td className="border border-rose-400  px-4 py-2">{daySlot.label}</td>
+                                {times.map((time) => (
+                                    <td key={time} className="border border-rose-400  px-4 py-2">
+                                        {routine[daySlot.value] &&
+                                            routine[daySlot.value].find((item) => item.time === time) &&
+                                            routine[daySlot.value].find((item) => item.time === time).course}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
