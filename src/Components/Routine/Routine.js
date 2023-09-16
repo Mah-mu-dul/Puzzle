@@ -1,5 +1,6 @@
-import { useState } from "react";
-
+import { useRef, useState } from "react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 // total time slots
 const times = [
@@ -24,7 +25,7 @@ const daySlots = [
     { value: "Saturday", label: "Saturday" },
 ];
 
-const format12HourWithoutAMPM = (time) => {
+const format12Hour = (time) => {
     const [start, end] = time.split("-");
     const [startHour, startMinute] = start.split(":");
     const [endHour, endMinute] = end.split(":");
@@ -38,6 +39,8 @@ const Routine = () => {
     const [selectedTime, setSelectedTime] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [routine, setRoutine] = useState({});
+    const tableRef = useRef(null);
+
 
     const handleAddCourse = () => {
         if (courseName && selectedTime && selectedDay) {
@@ -69,6 +72,46 @@ const Routine = () => {
             setSelectedDay("");
         }
     };
+
+    const handleDownloadPDF = () => {
+        // Initialize a new jsPDF instance
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a4",
+        });
+
+        // Define styles for the table
+        const tableStyles = {
+            styles: {
+                fillColor: [240, 240, 240],
+                fontSize: 12,
+                textColor: [0, 0, 0],
+                overflow: "linebreak",
+                valign: "middle",
+                halign: "center",
+
+
+            },
+            headStyles: {
+                fillColor: [200, 200, 200],
+                textColor: [0, 0, 0],
+            },
+            margin: { top: 20 },
+        };
+
+        // Get the table element
+        const table = tableRef.current;
+
+        // Add the table to the PDF with the specified styles
+        doc.autoTable({ html: table, ...tableStyles });
+
+        // Save the PDF with a specific filename
+        doc.save("routine.pdf");
+    };
+
+
+
 
     return (
         <div className="p-4  w-full ">
@@ -115,13 +158,14 @@ const Routine = () => {
                 </button>
             </div>
             <div className="sm:overflow-auto lg:overflow-hidden">
-                <table className="table-auto rounded-md mt-5 mx-auto">
+                <table className=" rounded-md mt-5 mx-auto  w-fit" ref={tableRef}>
                     <thead>
                         <tr>
-                            <th className="border border-rose-400  px-4 py-2"></th>
+                            <th className="border  border-rose-400  px-4 py-2" />  {/* 0,0 empty cell */}
+
                             {times.map((time) => (
-                                <th key={time} className="border border-rose-400  px-4 py-2">
-                                    {format12HourWithoutAMPM(time)}
+                                <th key={time} className="border whitespace-nowrap border-rose-400  px-4 py-2" >
+                                    {format12Hour(time)}
                                 </th>
                             ))}
                         </tr>
@@ -141,6 +185,12 @@ const Routine = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+            <div className=" w-fit mx-auto">
+                <button onClick={handleDownloadPDF}
+                    className="bg-rose-500 mx-auto  text-white p-2 mt-2 rounded-lg">
+                    Download routine
+                </button>
             </div>
         </div>
     );
