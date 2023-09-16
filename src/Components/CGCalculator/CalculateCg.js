@@ -8,7 +8,9 @@ const initialRows = [
 
 
 
-function CalculateCg() {
+function CalculateCg({ changeThemeColor }) {
+
+
     const [gradeOptions, setGradeOptions] = useState([
         { value: '4.00', label: 'A	' },
         { value: '3.7', label: 'A-' },
@@ -177,12 +179,18 @@ function CalculateCg() {
             }
         });
 
+
+
+
+
         if (!isNaN(parseFloat(previousEarnedCredit))) {
             totalCredits += parseFloat(previousEarnedCredit);
         }
 
         if (!isNaN(parseFloat(previousCGPA))) {
+            console.log(totalGradePoints);
             totalGradePoints += parseFloat(previousCGPA) * parseFloat(previousEarnedCredit);
+            console.log(totalGradePoints);
         }
 
         if (totalCredits === 0) {
@@ -197,6 +205,7 @@ function CalculateCg() {
     };
 
     return (<>
+        <p className='text-red-600 font-bold text-xs px-3 text-center w-fit mx-auto mb-10' id="label">Disclaimer: This is not the official calculator. The CGPA calculated may vary from the official transcript. Use at your own risk.</p>
         <p className='text-rose-600 font-bold text-lg w-fit mx-auto mb-10' id="label">{uName}</p>
         <div className='w-fit lg:mx-auto md:mx-auto sm:mx-3 relative '>
             <div className=' flex justify-between'>

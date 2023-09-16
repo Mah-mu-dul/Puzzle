@@ -42,12 +42,17 @@ const Navbar = () => {
                 <li><NavLink className={({ isActive, isPending }) =>
                     isPending ? "pending" : isActive ? active : ""
                 }
-                    to="docs">Docs</NavLink>
+                    to="calculate-cg">Calcuate CG</NavLink>
                 </li>
                 <li><NavLink className={({ isActive, isPending }) =>
                     isPending ? "pending" : isActive ? active : ""
                 }
-                    to="calculate-cg">Calcuate CG</NavLink>
+                    to="routine">Routine</NavLink>
+                </li>
+                <li><NavLink className={({ isActive, isPending }) =>
+                    isPending ? "pending" : isActive ? active : ""
+                }
+                    to="docs">Docs</NavLink>
                 </li>
             </ul >
         </div >
