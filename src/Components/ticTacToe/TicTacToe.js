@@ -5,7 +5,11 @@ const TicTacToe = () => {
     const [currentPlayer, setCurrentPlayer] = useState('X');
     const [winner, setWinner] = useState(null);
     const [mode, setMode] = useState('medium');
+    const [winnerCombos, setWinnerCombos] = useState([]);
     const [isAgainstComputer, setIsAgainstComputer] = useState(true);
+    const [gameCount, setGameCount] = useState({ x: 0, o: 0 })
+    const [players, setPlayers] = useState({ first: "Player X", Second: "Player O" })
+
 
 
     useEffect(() => {
@@ -40,6 +44,7 @@ const TicTacToe = () => {
         for (let combo of winningCombos) {
             const [a, b, c] = combo;
             if (board[a] !== '' && board[a] === board[b] && board[b] === board[c]) {
+                setWinnerCombos(combo)
                 return board[a];
             }
         }
@@ -56,6 +61,11 @@ const TicTacToe = () => {
             const gameWinner = checkWinner(newBoard);
             if (gameWinner) {
                 setWinner(gameWinner);
+                if (gameWinner === "X") {
+                    setGameCount({ ...gameCount, x: gameCount.x + 1 });
+                } else {
+                    setGameCount({ ...gameCount, o: gameCount.o + 1 });
+                }
             } else if (newBoard.indexOf('') === -1) {
                 setWinner('draw');
             } else {
@@ -63,7 +73,6 @@ const TicTacToe = () => {
             }
         }
     };
-
 
     // midium move
     const moveMid = (board) => {
@@ -154,12 +163,10 @@ const TicTacToe = () => {
         // const randomIndex = Math.floor(Math.random() * emptyCells.length);
         // const randomMoveIndex = emptyCells[randomIndex];
         const moveIndex = moveMid(board)
-        console.log(moveIndex)
-
         setTimeout(() => {
             // makeMove(randomMoveIndex);
             makeMove(moveIndex);
-        }, 200); // Delay the move by 500 milliseconds (adjust as needed)
+        }, 500); // Delay the move by 500 milliseconds (adjust as needed)
     };
 
     const makeMoveHard = () => {
@@ -171,6 +178,7 @@ const TicTacToe = () => {
         setBoard(Array(9).fill(''));
         setCurrentPlayer('X');
         setWinner(null);
+        setWinnerCombos([]);
     };
 
     const handleToggle = () => {
@@ -178,20 +186,27 @@ const TicTacToe = () => {
         setBoard(Array(9).fill(''));
         setCurrentPlayer('X');
         setWinner(null);
+        setGameCount({ x: 0, o: 0 });
     };
     return (
         <>
             <div className="flex justify-center items-center  mb-8">
-                <div className="bg-gray-100 p-8 rounded-lg shadow-lg">
-                    <h1 className="text-3xl font-bold mb-4">Tic Tac Toe</h1>
+                <div className="bg-[#1001] p-5 rounded-lg shadow-lg">
+                    <h1 className="text-3xl font-bold text-gray-800 mb-4">Tic Tac Toe</h1>
                     <div className="flex items-center justify-between">
-                        <h1 className="ml-3 text-gray-700">Computer</h1>
+                        <h1 className="ml-3 text-rose-600">Computer</h1>
                         <input type="checkbox"
                             checked={!isAgainstComputer}
                             onChange={handleToggle}
                             className="toggle toggle-info"
                         />
-                        <h1 className="ml-3 text-gray-700">Friend</h1>
+                        <h1 className="ml-3 text-rose-600">Friend</h1>
+                    </div>
+                    <div className="">
+                        <input className='w-28 mr-2 h-5 rounded-none border-0 input caret-transparent bg-transparent' type="text" value={players.first} onChange={(e) => setPlayers(e.target.value)} /> wins: {gameCount.x} times
+                        <br />
+                        <input className='w-28 mr-2 h-5 rounded-none border-0 input caret-transparent bg-transparent' type="text" value={players.Second} onChange={(e) => setPlayers(e.target.value)} /> wins: {gameCount.o} times
+
                     </div>
                     {winner ? (
                         <div className="text-xl font-bold  mb-4">
@@ -199,39 +214,21 @@ const TicTacToe = () => {
                         </div>
                     ) : <div className="text-2xl font-bold h-7 mb-4">
                     </div>}
-                    {/* <div className="mb-4">
-                        <label className="mr-2">Select mode:</label>
-                        <select
-                        className='bg-white text-black px-2 py-1 border-gray-200'
-                            value={mode}
-                            onChange={(e) => {
-                                resetGame();
-                                setMode(e.target.value);
-                            }}
-                        >
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                        </select>
-                    </div> */}
-                    <div className="grid grid-cols-3 gap-2">
 
-                        {board.map((cell, index) => (
+                    <div className="grid grid-cols-3 gap-2 w-fit mx-auto">
+
+                        {board.map((cell, i) => (
                             <div
-                                key={index}
-                                className="bg-[#467cf05e] rounded text-white text-4xl font-bold flex select-none justify-center items-center w-20  h-20 cursor-pointer"
-                                onClick={() => makeMove(index)}
+                                key={i}
+                                className={`${winnerCombos.includes(i) ? "bg-[#7777]" : "bg-[#e2eaa477]"} rounded text-gray-700 text-4xl font-bold flex select-none justify-center items-center w-20  h-20 cursor-pointer`}
+                                onClick={() => makeMove(i)}
                             >
                                 {cell}
                             </div>
                         ))}
                     </div>
-
-
-
-
                     <button
-                        className="bg-blue-500 mt-5 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-rose-500 mt-5 hover:bg-rose-400 text-white font-bold py-2 px-4 rounded"
                         onClick={resetGame}
                     >
                         Reset Game
@@ -239,41 +236,7 @@ const TicTacToe = () => {
                 </div>
 
             </div>
-            {/* 
-            <div className="flex justify-center items-center ">
-                <div className="w-64 flex flex-col justify-center">
-                    <div className="mb-4">
-                        <h1 className="text-2xl font-bold mb-2 text-center">Tic Tac Toe</h1>
-                        {winner ? (
-                            <div className="bg-green-200 text-center text-green-700 px-4 py-2 mb-2">
-                                Player {winner} wins!
 
-                            </div>
-                        ) : (
-                            <div className="bg-gray-200 rounded text-center  text-gray-700 px-4 py-2 mb-2">
-                                Player {player}'s turn
-                            </div>
-                        )}
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                        {board.map((cell, index) => (
-                            <div
-                                key={index}
-                                className="bg-[#467cf05e] rounded text-white text-4xl font-bold flex select-none justify-center items-center  h-20 cursor-pointer"
-                                onClick={() => handleClick(index)}
-                            >
-                                {cell}
-                            </div>
-                        ))}
-                    </div>
-                    <button
-                        className="bg-[#dddd] ml-0 text-[#202726] btn border-0 hover:bg-[#d4e4e7c5] px-4 py-2 mt-4"
-                        onClick={resetGame}
-                    >
-                        Reset
-                    </button>
-                </div>
-            </div> */}
         </>
     );
 };

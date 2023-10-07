@@ -10,14 +10,15 @@ import CalculateCg from './Components/CGCalculator/CalculateCg';
 import { useState } from 'react';
 import Game2048 from './Components/Game2048/Game2048';
 import Routine from './Components/Routine/Routine';
+import YoutubeApi1 from './Components/Youtube/YoutubeApi1';
+import Test from './Components/TestFiles/Test';
 
 function App() {
-  const [ThemeColor, setThemeColor] = useState("#f4cccc");
 
   return (
-    <div className={`bg-[#f4cccc] flex flex-col justify-between text-black  w-full pb-10 min-h-screen`} >
+    <div className={`bg-[#f4cccc] flex flex-col justify-between text-black  w-full pb-10 min-h-screen `} >
       <Navbar />
-      <div className="h-full">
+      <div className="h-full ">
         <Routes>
           <Route path="/" element={<SudokuSolver />} />
           <Route path="/solver/sudoku" element={<SudokuSolver />} />
@@ -25,8 +26,10 @@ function App() {
           <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="/game2048" element={<Game2048 />} />
-          <Route path="/calculate-cg" element={<CalculateCg changeThemeColor={() => setThemeColor} />} />
+          <Route path="/calculate-cg" element={<CalculateCg />} />
           <Route path="/routine" element={<Routine />} />
+          <Route path="/youtube-api" element={<YoutubeApi1 />} />
+          <Route path="/test" element={<Test />} />
         </Routes>
 
       </div>

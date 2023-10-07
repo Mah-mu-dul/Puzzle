@@ -8,8 +8,9 @@ const initialRows = [
 
 
 
-function CalculateCg({ changeThemeColor }) {
+const CalculateCg = () => {
 
+    const [textColor, setTextColor] = useState('text-[#dc2626]');
 
     const [gradeOptions, setGradeOptions] = useState([
         { value: '4.00', label: 'A	' },
@@ -78,6 +79,7 @@ function CalculateCg({ changeThemeColor }) {
                 { value: '0.0', label: 'F' },
             ])
             setUName("Independent University, Bangladesh.")
+            setTextColor("text-[#eb5013]")
 
 
         } else if (e.target.value === "aiub") {
@@ -95,6 +97,7 @@ function CalculateCg({ changeThemeColor }) {
             ])
 
             setUName("American International University - Bangladesh")
+            setTextColor("text-[#004ea8]")
 
         } else if (e.target.value === "nsu") {
             setGradeOptions([
@@ -112,6 +115,7 @@ function CalculateCg({ changeThemeColor }) {
 
             ])
             setUName("North South University")
+            setTextColor("text-[#0F1A50]")
 
 
         } else if (e.target.value === "diu") {
@@ -128,6 +132,7 @@ function CalculateCg({ changeThemeColor }) {
                 { value: '0', label: 'F' },
             ])
             setUName("Daffodil International University")
+            setTextColor("text-[#2E3094]")
 
         } else if (e.target.value === "ewu") {
             setGradeOptions([
@@ -145,6 +150,7 @@ function CalculateCg({ changeThemeColor }) {
                 { value: '0', label: 'F' },
             ])
             setUName("East West University")
+            setTextColor("text-[#192F59]")
         } else if (e.target.value === "uiu") {
             setGradeOptions([
                 { value: '4.00', label: 'A' },
@@ -160,6 +166,7 @@ function CalculateCg({ changeThemeColor }) {
                 { value: '0', label: 'F' },
             ])
             setUName("United International University")
+            setTextColor("text-[#f68b1f]")
         }
 
 
@@ -204,9 +211,9 @@ function CalculateCg({ changeThemeColor }) {
 
     };
 
-    return (<>
+    return (<div>
         <p className='text-red-600 font-bold text-xs px-3 text-center w-fit mx-auto mb-10' id="label">Disclaimer: This is not the official calculator. The CGPA calculated may vary from the official transcript. Use at your own risk.</p>
-        <p className='text-rose-600 font-bold text-lg w-fit mx-auto mb-10' id="label">{uName}</p>
+        <p className={`font-bold text-lg w-fit mx-auto mb-10 ${textColor}`} id="label">{uName}</p>
         <div className='w-fit lg:mx-auto md:mx-auto sm:mx-3 relative '>
             <div className=' flex justify-between'>
                 <span>
@@ -238,6 +245,7 @@ function CalculateCg({ changeThemeColor }) {
                     className='bg-transparent px-2 w-20 ml-2 rounded border-2 border-rose-400 '
                     type="number"
                     id="previousCGPA"
+                    placeholder='optional'
                     value={previousCGPA}
                     onChange={(e) => setPreviousCGPA(e.target.value)}
                 />
@@ -248,6 +256,7 @@ function CalculateCg({ changeThemeColor }) {
                 <input
                     className='bg-transparent px-2 w-20 ml-2 my-1 rounded border-2 border-rose-400 '
                     type="number"
+                    placeholder='optional'
                     id="previousEarnedCredit"
                     value={previousEarnedCredit}
                     onChange={(e) => setPreviousEarnedCredit(e.target.value)}
@@ -307,7 +316,8 @@ function CalculateCg({ changeThemeColor }) {
 
             <button className='bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded' onClick={addRow}>Add Row</button>
         </div>
-    </>
+    </div>
+
     );
 }
 
