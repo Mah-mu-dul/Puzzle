@@ -187,6 +187,8 @@ const TicTacToe = () => {
         setCurrentPlayer('X');
         setWinner(null);
         setGameCount({ x: 0, o: 0 });
+        setWinnerCombos([]);
+
     };
     return (
         <>

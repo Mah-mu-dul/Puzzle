@@ -52,6 +52,11 @@ const Navbar = () => {
                 <li><NavLink className={({ isActive, isPending }) =>
                     isPending ? "pending" : isActive ? active : ""
                 }
+                    to="qr">QR</NavLink>
+                </li>
+                <li><NavLink className={({ isActive, isPending }) =>
+                    isPending ? "pending" : isActive ? active : ""
+                }
                     to="docs">Docs</NavLink>
                 </li>
             </ul >
