@@ -23,7 +23,7 @@ function App() {
     for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 13)];
     }
-    color += "33"
+    color += "22"
     return color;
   };
 
