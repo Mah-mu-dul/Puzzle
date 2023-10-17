@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import QRCode from 'qrcode.react';
 import html2canvas from 'html2canvas';
-
+import "./waving.css"
 const QRCodeGenerator = () => {
 
     const [url, setUrl] = useState("")
@@ -38,9 +38,27 @@ const QRCodeGenerator = () => {
     const { red, green, blue, alpha } = rgbaValues;
     const colorStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 
+    //  waving text
+    const text = "Make your QR. Just past you link and download or take an ss.";
+
+    const letters = text.split("");
     return (
-        <div className='w-fit mx-auto flex flex-col items-center'>
-            <p className='text-2xl font-mono font-medium text-center max-w-[500px]'>Make your QR <br /> Just past you link and download or take an ss</p>
+        <div className='w-fit mb-5 mx-auto flex flex-col items-center'>
+            <p className="text-2xl font-mono font-medium text-center max-w-[500px]">
+                {letters.map((character, index) => (
+                    character === " " ? (
+                        <span key={index}>&nbsp;</span>
+                    ) : (
+                        <span
+                            key={index}
+                            className="animate-letter"
+                            style={{ animationDelay: `${index * 0.1}s` }}
+                        >
+                            {character}
+                        </span>
+                    )
+                ))}
+            </p>
             <input
                 className='mt-5 bg-transparent border-2 w-52 border-rose-300 px-2 py-1 mb-5 rounded'
                 type="text"
