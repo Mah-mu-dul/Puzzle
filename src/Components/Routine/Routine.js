@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import CostCalculate from "./CostCalculate";
+import html2canvas from 'html2canvas';
+
 
 // total time slots
 
@@ -42,6 +44,8 @@ const Routine = () => {
     const [selectedTime, setSelectedTime] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [routine, setRoutine] = useState({});
+    const routineRef = useRef(null);
+
     const [times, setTimes] = useState([
         "08:00-09:30",
         "09:40-11:10",
@@ -98,7 +102,7 @@ const Routine = () => {
     };
 
     const handleDownloadPDF = () => {
-        // Initialize a new jsPDF instance
+        // Initialize a new jsPDF instanc
         const doc = new jsPDF({
             orientation: "landscape",
             unit: "mm",
@@ -131,8 +135,20 @@ const Routine = () => {
         doc.autoTable({ html: table, ...tableStyles });
 
         // Save the PDF with a specific filename
-        doc.save("routine.pdf");
+        doc.save("Easy-Rutine.pdf");
     };
+
+    // download img
+    const handledownloadPNG = () => {
+        // Generate the QR code as an image using html2canvas
+        html2canvas(tableRef.current).then((canvas) => {
+            const dataURL = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = dataURL;
+            a.download = 'Easy-Rutine.png';
+            a.click();
+        });
+    }
 
     const handleAddCustomTime = () => {
         const customTimeSlots = prompt("Enter comma separated custom time slots  (e.g., '09:00-10:30,10:40-11:10'):");
@@ -219,45 +235,51 @@ const Routine = () => {
 
                 </div>
             </div>
-            <div className="sm:overflow-auto lg:overflow-hidden">
-                <table className=" rounded-md mt-5 mx-auto  w-fit" ref={tableRef}>
-                    <thead>
-                        <tr>
-                            <th className="border  border-rose-400  px-4 py-2" />  {/* 0,0 empty cell */}
+            <div className="sm:overflow-scroll md:overflow-scroll lg:overflow-hidden w-full mx-auto flex justify-center my-5 px-3" ref={routineRef}>
+                <div className="w-full">
+                    <table className=" rounded-md mt-5 mx-auto   w-fit" ref={tableRef}>
+                        <thead>
+                            <tr>
+                                <th className="border  border-rose-400  px-4 py-2" />  {/* 0,0 empty cell */}
 
-                            {times.map((time) => (
-                                <th key={time} className="border whitespace-nowrap border-rose-400  px-4 py-2" >
-                                    {format12Hour(time)}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {daySlots.slice(3).map((daySlot) => (
-                            <tr key={daySlot.value}>
-                                <td className="border border-rose-400  px-4 py-2">{daySlot.label}</td>
                                 {times.map((time) => (
-                                    <td key={time}
-                                        onDoubleClick={() => handleDoubleClick(daySlot.value, time)}
-                                        className="border  border-rose-400  px-4 py-2">
-                                        {routine[daySlot.value] &&
-                                            routine[daySlot.value].find((item) => item.time === time) &&
-                                            routine[daySlot.value].find((item) => item.time === time).course
-                                            // &&
-                                            // console.log(routine[daySlot.value])
-                                        }
-                                    </td>
+                                    <th key={time} className="border whitespace-nowrap border-rose-400  px-4 py-2" >
+                                        {format12Hour(time)}
+                                    </th>
                                 ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {daySlots.slice(3).map((daySlot) => (
+                                <tr key={daySlot.value}>
+                                    <td className="border border-rose-400  px-4 py-2">{daySlot.label}</td>
+                                    {times.map((time) => (
+                                        <td key={time}
+                                            onDoubleClick={() => handleDoubleClick(daySlot.value, time)}
+                                            className="border  border-rose-400 text-center  px-4 py-2">
+                                            {routine[daySlot.value] &&
+                                                routine[daySlot.value].find((item) => item.time === time) &&
+                                                routine[daySlot.value].find((item) => item.time === time).course
+                                                // &&
+                                                // console.log(routine[daySlot.value])
+                                            }
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div className=" w-fit mx-auto">
                 <button onClick={handleDownloadPDF}
-                    className="bg-rose-500 mx-auto  text-white p-2 mt-2 rounded-lg">
-                    Download routine
+                    className="border border-rose-500 mx-auto  text-black p-2 mt-2 rounded">
+                    Download PDF
                 </button>
+                <button className='border p-2 border-rose-500 ml-3 rounded' onClick={handledownloadPNG}>
+                    Download PNG
+                </button>
+
             </div>
             <div className="">
                 <CostCalculate />

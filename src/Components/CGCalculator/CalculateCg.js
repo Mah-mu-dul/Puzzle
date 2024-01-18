@@ -23,6 +23,8 @@ const CalculateCg = () => {
         { value: '1.7', label: 'C-' },
         { value: '1.3', label: 'D+' },
         { value: '1', label: 'D	' },
+        { value: '0.0', label: 'F' },
+
     ])
     const [rows, setRows] = useState(initialRows);
     const [previousCGPA, setPreviousCGPA] = useState('');
@@ -186,29 +188,19 @@ const CalculateCg = () => {
             }
         });
 
-
-
-
-
         if (!isNaN(parseFloat(previousEarnedCredit))) {
             totalCredits += parseFloat(previousEarnedCredit);
         }
 
         if (!isNaN(parseFloat(previousCGPA))) {
-            console.log(totalGradePoints);
             totalGradePoints += parseFloat(previousCGPA) * parseFloat(previousEarnedCredit);
-            console.log(totalGradePoints);
         }
 
         if (totalCredits === 0) {
-            return 'N/A';
+            return '0';
         }
-
         const cgpa = (totalGradePoints / totalCredits).toFixed(2);
         return cgpa;
-
-
-
     };
 
     return (<div>
@@ -217,8 +209,8 @@ const CalculateCg = () => {
         <div className='w-fit lg:mx-auto md:mx-auto sm:mx-3 relative '>
             <div className=' flex justify-between'>
                 <span>
-                    <strong>CGPA: <span className='text-rose-600'>{calculateCGPA()}</span></strong> <br />
-                    <strong>Total Earned Credit: <span className='text-rose-600'>{calculateTotalEarnedCredit()}</span></strong>
+                    <strong>CGPA: <span className='text-rose-600 text-xl'>{calculateCGPA()}</span></strong> <br />
+                    <strong>Total Earned Credit: <span className='text-rose-600 text-xl'>{calculateTotalEarnedCredit()}</span></strong>
                 </span>
                 <span>
                     <select
@@ -242,10 +234,11 @@ const CalculateCg = () => {
             <div>
                 <label htmlFor="previousCGPA">Previous CGPA:</label>
                 <input
-                    className='bg-transparent px-2 w-20 ml-2 rounded border-2 border-rose-400 '
+
+                    className='bg-transparent px-2 w-28 ml-2 rounded border-2 border-rose-400 '
                     type="number"
                     id="previousCGPA"
-                    placeholder='optional'
+                    placeholder={previousEarnedCredit ? "Mandatory" : "optional"}
                     value={previousCGPA}
                     onChange={(e) => setPreviousCGPA(e.target.value)}
                 />
@@ -254,9 +247,9 @@ const CalculateCg = () => {
             <div>
                 <label htmlFor="previousEarnedCredit">Previous Earned Credit:</label>
                 <input
-                    className='bg-transparent px-2 w-20 ml-2 my-1 rounded border-2 border-rose-400 '
+                    className='bg-transparent px-2 w-28 ml-2 my-1 rounded border-2 border-rose-400 '
                     type="number"
-                    placeholder='optional'
+                    placeholder={previousCGPA ? "Mandatory" : "optional"}
                     id="previousEarnedCredit"
                     value={previousEarnedCredit}
                     onChange={(e) => setPreviousEarnedCredit(e.target.value)}

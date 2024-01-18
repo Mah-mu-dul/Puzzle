@@ -14,6 +14,7 @@ import YoutubeApi1 from './Components/Youtube/YoutubeApi1';
 import Test from './Components/TestFiles/Test';
 import BackgroundColorChanger from './Components/TestFiles/BackgroundColorChanger ';
 import QRCodeGenerator from './Components/QRCodeGenerator';
+import About from './Components/About';
 
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="bg-white">
+    <div className="bg-white max-w-[1500px] mx-auto ">
       <div
         className={` flex flex-col justify-between text-black  w-full pb-10 min-h-screen transition-background duration-1000`}
         style={{ backgroundColor, transition: 'background 2s' }}
@@ -59,6 +60,7 @@ function App() {
             <Route path="/youtube-api" element={<YoutubeApi1 />} />
             <Route path="/test" element={<Test />} />
             <Route path="/qr" element={<QRCodeGenerator/>} />
+            <Route path="/about" element={<About/>} />
           </Routes>
 
         </div>

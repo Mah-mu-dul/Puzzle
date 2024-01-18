@@ -193,7 +193,7 @@ const TicTacToe = () => {
     return (
         <>
             <div className="flex justify-center items-center  mb-8">
-                <div className="bg-[#1001] p-5 rounded-lg shadow-lg">
+                <div className="bg-[#81818565] p-5 rounded-lg shadow-lg">
                     <h1 className="text-3xl font-bold text-gray-800 mb-4">Tic Tac Toe</h1>
                     <div className="flex items-center justify-between">
                         <h1 className="ml-3 text-rose-600">Computer</h1>
