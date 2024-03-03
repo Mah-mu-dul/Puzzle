@@ -22,7 +22,7 @@ const MoneyManagement = () => {
 
 
     const returnNotes = (x, y) => {
-        if (x > y) {
+        if (x > y && x > 0 && y > 0) {
             let rest = x - y;
             let result = {};
             const notes = [1000, 500, 200, 100, 50, 20, 10, 5, 2, 1];
@@ -34,6 +34,10 @@ const MoneyManagement = () => {
                 }
             }
             return result;
+        }
+        else if (x < 0 || y < 0) {
+            setShowAlart(true)
+            setAlartData("Alert: Any data can not Negative")
         }
         else if (x === y || x === "" || y === "") {
             // setAlartData("Given")
@@ -52,7 +56,11 @@ const MoneyManagement = () => {
             </div>
             {
                 showAlart &&
-                <div onClick={() => setShowAlart(false)} role="alert" className="alert alert-warning w-fit absolute right-5 btn btn-warning flex items-center text-wrap ">
+                <div onClick={() => {
+                    setShowAlart(false)
+                    setAlartData("Alert: ammount is less then total cost")
+                }
+                } role="alert" className="alert alert-warning w-fit absolute right-5 btn btn-warning flex items-center text-wrap ">
                     <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     <span className="mr-2">{alartData}</span>
                 </div>
@@ -76,6 +84,7 @@ const MoneyManagement = () => {
                         <div>
                             <label className=" text-gray-700">Enter total cost:</label>
                             <input
+                                min="1"
                                 required
                                 type="nmber"
                                 value={cost}
