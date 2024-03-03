@@ -15,6 +15,8 @@ import Test from './Components/TestFiles/Test';
 import BackgroundColorChanger from './Components/TestFiles/BackgroundColorChanger ';
 import QRCodeGenerator from './Components/QRCodeGenerator';
 import About from './Components/About';
+import Error from './Components/Error';
+import MoneyManagement from './Components/MoneyManagement/MoneyManagement';
 
 
 function App() {
@@ -59,8 +61,12 @@ function App() {
             <Route path="/routine" element={<Routine />} />
             <Route path="/youtube-api" element={<YoutubeApi1 />} />
             <Route path="/test" element={<Test />} />
-            <Route path="/qr" element={<QRCodeGenerator/>} />
-            <Route path="/about" element={<About/>} />
+            <Route path="/qr" element={<QRCodeGenerator />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/money-management" element={<MoneyManagement />} />
+
+
+            <Route path="/*" element={<Error />} /> 
           </Routes>
 
         </div>

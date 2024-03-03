@@ -4,6 +4,8 @@ import "jspdf-autotable";
 import CostCalculate from "./CostCalculate";
 import html2canvas from 'html2canvas';
 
+import qr from '../../Images/qr.png'
+
 
 // total time slots
 
@@ -141,7 +143,7 @@ const Routine = () => {
     // download img
     const handledownloadPNG = () => {
         // Generate the QR code as an image using html2canvas
-        html2canvas(tableRef.current).then((canvas) => {
+        html2canvas(routineRef.current).then((canvas) => {
             const dataURL = canvas.toDataURL('image/png');
             const a = document.createElement('a');
             a.href = dataURL;
@@ -235,40 +237,47 @@ const Routine = () => {
 
                 </div>
             </div>
-            <div className="sm:overflow-scroll md:overflow-scroll lg:overflow-hidden w-full mx-auto flex justify-center my-5 px-3" ref={routineRef}>
+            <div className="sm:overflow-scroll md:overflow-scroll lg:overflow-hidden w-full mx-auto flex justify-center my-5 px-3" >
                 <div className="w-full">
-                    <table className=" rounded-md mt-5 mx-auto   w-fit" ref={tableRef}>
-                        <thead>
-                            <tr>
-                                <th className="border  border-rose-400  px-4 py-2" />  {/* 0,0 empty cell */}
+                    <div className=" p-3 w-fit mx-auto flex flex-col justify-center items-center" ref={routineRef}>
+                        <h1 className="text-center text-2xl">Elevate Your Routine Effortlessly</h1>
+                        <table className=" rounded-md mt-5 mx-auto   w-fit" ref={tableRef}>
+                            <thead>
+                                <tr>
+                                    <th className="border  border-rose-400  px-4 py-2 text-sm " />
 
-                                {times.map((time) => (
-                                    <th key={time} className="border whitespace-nowrap border-rose-400  px-4 py-2" >
-                                        {format12Hour(time)}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {daySlots.slice(3).map((daySlot) => (
-                                <tr key={daySlot.value}>
-                                    <td className="border border-rose-400  px-4 py-2">{daySlot.label}</td>
                                     {times.map((time) => (
-                                        <td key={time}
-                                            onDoubleClick={() => handleDoubleClick(daySlot.value, time)}
-                                            className="border  border-rose-400 text-center  px-4 py-2">
-                                            {routine[daySlot.value] &&
-                                                routine[daySlot.value].find((item) => item.time === time) &&
-                                                routine[daySlot.value].find((item) => item.time === time).course
-                                                // &&
-                                                // console.log(routine[daySlot.value])
-                                            }
-                                        </td>
+                                        <th key={time} className="border whitespace-nowrap border-rose-400  px-4 py-2" >
+                                            {format12Hour(time)}
+                                        </th>
                                     ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {daySlots.slice(3).map((daySlot) => (
+                                    <tr key={daySlot.value}>
+                                        <td className="border border-rose-400  px-4 py-2">{daySlot.label}</td>
+                                        {times.map((time) => (
+                                            <td key={time}
+                                                onDoubleClick={() => handleDoubleClick(daySlot.value, time)}
+                                                className="border  border-rose-400 text-center  px-4 py-2">
+                                                {routine[daySlot.value] &&
+                                                    routine[daySlot.value].find((item) => item.time === time) &&
+                                                    routine[daySlot.value].find((item) => item.time === time).course
+                                                    // &&
+                                                    // console.log(routine[daySlot.value])
+                                                }
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <p className="text-center w-[500px] mb-2">Your personalized routine is ready at <span className="text-blue-700">easypuzzle.netlify.app </span>.
+                            <br />
+                            To explore more services Scan the QR code below for quick access:</p>
+                        <img className="w-20" src={qr} alt="" />
+                    </div>
                 </div>
             </div>
             <div className=" w-fit mx-auto">

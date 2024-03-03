@@ -12,44 +12,58 @@ const Navbar = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-[#eeee] rounded-box w-52">
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="/">Sudoku</NavLink></li>
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="/tictactoe">Tic Tac Toe</NavLink>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="/">Sudoku</NavLink></li>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="/tictactoe">Tic Tac Toe</NavLink>
                             </li>
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="/convert/morsecode">Morse Code  </NavLink>
+
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="calculate-cg">Calcuate CG</NavLink>
                             </li>
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="calculate-cg">Calcuate CG</NavLink>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="money-management">Money Management</NavLink>                            </li>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="routine">Routine</NavLink>
                             </li>
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="routine">Routine</NavLink>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="qr">QR</NavLink>
                             </li>
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="qr">QR</NavLink>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="docs">Docs</NavLink>
                             </li>
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="docs">Docs</NavLink>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="/convert/morsecode">Morse Code  </NavLink>
                             </li>
-                            <li><NavLink className={({ isActive, isPending }) =>
-                                isPending ? "pending" : isActive ? active : ""
-                            }
-                                to="about">About</NavLink>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="about">About</NavLink>
                             </li>
                         </ul>
                     </div>
@@ -94,7 +108,8 @@ const Navbar = () => {
                     </NavLink>
                 </li> */}
 
-                {/* <li><NavLink className={({ isActive, isPending }) =>
+                {/* <li>
+                <NavLink className={({ isActive, isPending }) =>
                     isPending ? "pending" : isActive ? active : ""
                 }
                     to="/yt">Youtube watch </NavLink>
