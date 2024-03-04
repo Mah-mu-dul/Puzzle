@@ -23,6 +23,12 @@ const Navbar = () => {
                                 }
                                     to="/tictactoe">Tic Tac Toe</NavLink>
                             </li>
+                            <li>
+                                <NavLink className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? active : ""
+                                }
+                                    to="/connect4">Connect 4</NavLink>
+                            </li>
 
                             <li>
                                 <NavLink className={({ isActive, isPending }) =>

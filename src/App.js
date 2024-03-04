@@ -17,6 +17,7 @@ import QRCodeGenerator from './Components/QRCodeGenerator';
 import About from './Components/About';
 import Error from './Components/Error';
 import MoneyManagement from './Components/MoneyManagement/MoneyManagement';
+import Connect4Game from './Components/Connect4/Connect4Game';
 
 
 function App() {
@@ -64,9 +65,10 @@ function App() {
             <Route path="/qr" element={<QRCodeGenerator />} />
             <Route path="/about" element={<About />} />
             <Route path="/money-management" element={<MoneyManagement />} />
+            <Route path="/Connect4" element={<Connect4Game />} />
 
 
-            <Route path="/*" element={<Error />} /> 
+            <Route path="/*" element={<Error />} />
           </Routes>
 
         </div>
