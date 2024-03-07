@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import HowToPlayModal from './HowToPlayModal';
 
 const Connect4Game = () => {
     const [board, setBoard] = useState(Array.from({ length: 6 }, () => Array(7).fill(null)));
@@ -69,29 +70,36 @@ const Connect4Game = () => {
     };
 
     return (
-        <div className="flex flex-col items-center">
-            <h1 className="text-3xl font-bold mb-4">Connect 4 Game</h1>
-            {winner && (
-                <div className="mb-4">
-                    <h2 className="text-xl font-bold text-center">Winner: {winner.toUpperCase()}</h2>
-                    <button onClick={resetGame} className="mt-2 btn btn-primary text-white font-bold py-2 px-4 rounded">
-                        Restart Game
-                    </button>
-                </div>
-            )}
+        <div className="block md:flex mx-auto w-fit ">
+            <div className="mx-5">
+                <h1 className="text-3xl font-bold mb-4">Connect 4 Game</h1>
 
-            <div className="grid grid-cols-7 gap-1">
-                {board.map((row, rowIndex) => (
-                    row.map((cell, colIndex) => (
-                        <div key={`${rowIndex}-${colIndex}`} className="w-12 h-12 border border-gray-500 rounded-full flex items-center justify-center">
-                            <div
-                                className={`w-8 h-8 rounded-full ${cell === 'red' ? 'bg-red-500' : cell === 'yellow' ? 'bg-yellow-500' : 'bg-gray-200'}`}
-                                onClick={() => handleMove(colIndex)}
-                            ></div>
+                <div className="h-16">
+                    {winner && (
+                        <div className="mb-4 flex justify-between items-center">
+                            <h2 className="text-xl font-bold text-center">Winner: {winner.toUpperCase()}</h2>
+                            <button onClick={resetGame} className="mt-2 btn btn-primary text-white font-bold py-2 px-4 rounded">
+                                Restart Game
+                            </button>
                         </div>
-                    ))
-                ))}
+                    )}
+                </div>
+
+                <div className="grid grid-cols-7 gap-1">
+                    {board.map((row, rowIndex) => (
+                        row.map((cell, colIndex) => (
+                            <div key={`${rowIndex}-${colIndex}`} className="w-12 h-12 border border-gray-500 rounded-full flex items-center justify-center">
+                                <div
+                                    className={`w-8 h-8 rounded-full ${cell === 'red' ? 'bg-red-500' : cell === 'yellow' ? 'bg-yellow-500' : 'bg-gray-200'}`}
+                                    onClick={() => handleMove(colIndex)}
+                                ></div>
+                            </div>
+                        ))
+                    ))}
+                </div>
             </div>
+
+            <HowToPlayModal />
         </div>
     );
 };
