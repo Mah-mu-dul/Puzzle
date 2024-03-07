@@ -74,11 +74,12 @@ const Connect4Game = () => {
             {winner && (
                 <div className="mb-4">
                     <h2 className="text-xl font-bold text-center">Winner: {winner.toUpperCase()}</h2>
-                    <button onClick={resetGame} className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <button onClick={resetGame} className="mt-2 btn btn-primary text-white font-bold py-2 px-4 rounded">
                         Restart Game
                     </button>
                 </div>
             )}
+
             <div className="grid grid-cols-7 gap-1">
                 {board.map((row, rowIndex) => (
                     row.map((cell, colIndex) => (

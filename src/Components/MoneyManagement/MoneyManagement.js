@@ -86,7 +86,7 @@ const MoneyManagement = () => {
                             <input
                                 min="1"
                                 required
-                                type="nmber"
+                                type="number"
                                 value={cost}
                                 onChange={(e) => {
                                     setCost(e.target.value)
