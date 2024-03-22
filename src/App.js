@@ -18,8 +18,6 @@ import About from './Components/About';
 import Error from './Components/Error';
 import MoneyManagement from './Components/MoneyManagement/MoneyManagement';
 import Connect4Game from './Components/Connect4/Connect4Game';
-
-
 function App() {
   const getRandomHexColor = () => {
     const letters = '3456789abcdef';
@@ -47,8 +45,8 @@ function App() {
       <div
         className={` flex flex-col justify-between text-black  w-full pb-10 min-h-screen transition-background duration-1000`}
         style={{ backgroundColor, transition: 'background 2s' }}
-
       >
+
         <Navbar />
         <div className="h-full ">
           <Routes>

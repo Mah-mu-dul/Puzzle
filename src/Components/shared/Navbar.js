@@ -16,7 +16,7 @@ const Navbar = () => {
                                 <NavLink className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? active : ""
                                 }
-                                    to="/">Sudoku</NavLink></li>
+                                    to="/solver/sudoku">Sudoku</NavLink></li>
                             <li>
                                 <NavLink className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? active : ""
