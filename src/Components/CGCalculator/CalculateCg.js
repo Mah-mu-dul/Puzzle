@@ -6,11 +6,17 @@ const initialRows = [
     { courseName: '', grade: '4.00', credits: '' },
 ];
 
+const initialRetakeRows = [
+    { courseName: '', previousGrade: "2.00", grade: '4.00', credits: '' },
+    { courseName: '', previousGrade: "2.00", grade: '4.00', credits: '' },
+];
+
 
 
 const CalculateCg = () => {
 
     const [textColor, setTextColor] = useState('text-[#dc2626]');
+    const [previousEarnedColor, setPreviousEarnedColor] = useState('#0f0');
 
     const [gradeOptions, setGradeOptions] = useState([
         { value: '4.00', label: 'A	' },
@@ -27,34 +33,60 @@ const CalculateCg = () => {
 
     ])
     const [rows, setRows] = useState(initialRows);
+    const [retakeRows, setRetakeRows] = useState(initialRetakeRows);
+
     const [previousCGPA, setPreviousCGPA] = useState('');
+
     const [uName, setUName] = useState('Independent University, Bangladesh');
     const [previousEarnedCredit, setPreviousEarnedCredit] = useState('');
 
     useEffect(() => {
         calculateTotalEarnedCredit();
         calculateCGPA();
-    }, [previousCGPA, previousEarnedCredit, rows]);
+    }, [previousCGPA, previousEarnedCredit, rows, retakeRows]);
 
-    const handleChange = (e, index) => {
+    const handleInputChange = (e, index) => {
         const { name, value } = e.target;
         const updatedRows = [...rows];
         updatedRows[index][name] = value;
         setRows(updatedRows);
     };
+    const handleRetakeInputChange = (e, index) => {
+        const { name, value } = e.target;
+        const updatedRows = [...retakeRows];
+        updatedRows[index][name] = value;
+        setRetakeRows(updatedRows);
+    };
+
+
 
     const addRow = () => {
         setRows([...rows, { courseName: '', grade: '4.00', credits: '' }]);
     };
+    const addRetakeRow = () => {
+        setRetakeRows([...retakeRows, { courseName: '', previousGrade: "2.00", grade: '4.00', credits: '' }]);
+    };
 
     const calculateTotalEarnedCredit = () => {
         let totalCredits = 0;
+
+        let totalRetakeCredits = 0
 
         rows.forEach((row) => {
             const credits = parseFloat(row.credits);
 
             if (!isNaN(credits)) {
                 totalCredits += credits;
+            }
+        });
+        retakeRows.forEach((row) => {
+            const credits = parseFloat(row.credits);
+
+            if (previousEarnedCredit < totalRetakeCredits) {
+                console.log("pre credit is smaller then retake")
+            }
+            else if (!isNaN(credits)) {
+                totalRetakeCredits += credits;
             }
         });
 
@@ -187,6 +219,20 @@ const CalculateCg = () => {
                 totalGradePoints += credits * grade;
             }
         });
+        retakeRows.forEach((row) => {
+            const previousGrade = parseFloat(row.previousGrade); // Assuming previousGrade is the grade of the original attempt
+            const retakeGrade = parseFloat(row.grade);
+            const credits = parseFloat(row.credits);
+
+            if (!isNaN(previousGrade) && !isNaN(retakeGrade) && !isNaN(credits)) {
+                // Subtract previous attempt grade points and credits
+                totalCredits -= credits;
+                totalGradePoints -= previousGrade * credits;
+                // Add retake course grade points and credits
+                totalCredits += credits;
+                totalGradePoints += retakeGrade * credits;
+            }
+        });
 
         if (!isNaN(parseFloat(previousEarnedCredit))) {
             totalCredits += parseFloat(previousEarnedCredit);
@@ -203,10 +249,10 @@ const CalculateCg = () => {
         return cgpa;
     };
 
-    return (<div>
+    return (<div className='mx-1 max-w-full'>
         <p className='text-red-600 font-bold text-xs px-3 text-center w-fit mx-auto mb-10' id="label">Disclaimer: This is not the official calculator. The CGPA calculated may vary from the official transcript. Use at your own risk.</p>
         <p className={`font-bold text-lg w-fit mx-auto mb-10 ${textColor}`} id="label">{uName}</p>
-        <div className='w-fit lg:mx-auto md:mx-auto sm:mx-3 relative '>
+        <div className='w-fit max-w-full overflow-hidden  lg:mx-auto md:mx-3 relative '>
             <div className=' flex justify-between'>
                 <span>
                     <strong>CGPA: <span className='text-rose-600 text-xl'>{calculateCGPA()}</span></strong> <br />
@@ -247,7 +293,7 @@ const CalculateCg = () => {
             <div>
                 <label htmlFor="previousEarnedCredit">Previous Earned Credit:</label>
                 <input
-                    className='bg-transparent px-2 w-28 ml-2 my-1 rounded border-2 border-rose-400 '
+                    className={`bg-transparent px-2 w-28 ml-2 my-1 rounded border-2 border-rose-400 `}
                     type="number"
                     placeholder={previousCGPA ? "Mandatory" : "optional"}
                     id="previousEarnedCredit"
@@ -256,58 +302,131 @@ const CalculateCg = () => {
                 />
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th className='text-sm'>Course Name (optional)</th>
-                        <th className='text-sm'>No. of Credits</th>
-                        <th className='text-sm'>Grade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row, index) => (
-                        <tr key={index}>
-                            <td>
-                                <input
-                                    className='bg-transparent px-2 lg:w-48 sm:w-36 rounded border-2 border-rose-400 '
-                                    type="text"
-                                    placeholder='Course Name'
-                                    name="courseName"
-                                    value={row.courseName}
-                                    onChange={(e) => handleChange(e, index)}
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    className='bg-transparent rounded mx-5 border-2 border-rose-400  w-20 px-2'
-                                    type="number"
-                                    placeholder='Credits'
-                                    name="credits"
-                                    value={row.credits}
-                                    onChange={(e) => handleChange(e, index)}
-                                />
-                            </td>
-                            <td>
-                                <select
-                                    className='bg-transparent px-2  rounded border-2 border-rose-400'
-                                    name="grade"
-                                    value={row.grade}
-                                    onChange={(e) => handleChange(e, index)}
-                                >
-                                    {gradeOptions.map((option) => (
-                                        <option key={option.value} value={option.value}>
-                                            {option.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </td>
+            <div className="flex gap-10 flex-wrap ">
+                <div className="">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th className='text-sm'>Course Name (optional)</th>
+                                <th className='text-sm'>No. of Credits</th>
+                                <th className='text-sm'>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row, index) => (
+                                <tr key={index}>
+                                    <td>
+                                        <input
+                                            className='bg-transparent px-2 lg:w-48 sm:w-36 rounded border-2 border-rose-400 '
+                                            type="text"
+                                            placeholder='Course Name'
+                                            name="courseName"
+                                            value={row.courseName}
+                                            onChange={(e) => handleInputChange(e, index)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className='bg-transparent rounded mx-5 border-2 border-rose-400  w-20 px-2'
+                                            type="number"
+                                            placeholder='Credits'
+                                            name="credits"
+                                            value={row.credits}
+                                            onChange={(e) => handleInputChange(e, index)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <select
+                                            className='bg-transparent px-2  rounded border-2 border-rose-400'
+                                            name="grade"
+                                            value={row.grade}
+                                            onChange={(e) => handleInputChange(e, index)}
+                                        >
+                                            {gradeOptions.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
 
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
-            <button className='bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded' onClick={addRow}>Add Row</button>
+                    <button className='bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded' onClick={addRow}>Add Row</button>
+                </div>
+                <div className=" ">
+                    <p className='text-xl font-semibold lg:mt-[-27px]'>Retake Calculation</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th className='text-sm text-left'>Course Name</th>
+                                <th className='text-sm'>No. of Credits</th>
+                                <th className='text-sm text-left'>Pre Grade</th>
+                                <th className='text-sm'>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {retakeRows.map((row, index) => (
+                                <tr key={index}>
+                                    <td>
+                                        <input
+                                            className='bg-transparent px-2 md:w-48 w-32 rounded border-2 border-rose-400 '
+                                            type="text"
+                                            placeholder='Course Name'
+                                            name="courseName"
+                                            value={row.courseName}
+                                            onChange={(e) => handleRetakeInputChange(e, index)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className='bg-transparent rounded mx-2 lg:mx-5 border-2 border-rose-400  w-20 px-2'
+                                            type="number"
+                                            placeholder='Credits'
+                                            name="credits"
+                                            value={row.credits}
+                                            onChange={(e) => handleRetakeInputChange(e, index)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <select
+                                            className='bg-transparent px-2 mr-2 lg:mr-5 rounded border-2 border-rose-400'
+                                            name="previousGrade"
+                                            value={row.previousGrade}
+                                            onChange={(e) => handleRetakeInputChange(e, index)}
+                                        >
+                                            {gradeOptions.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select
+                                            className='bg-transparent px-2  rounded border-2 border-rose-400'
+                                            name="grade"
+                                            value={row.grade}
+                                            onChange={(e) => handleRetakeInputChange(e, index)}
+                                        >
+                                            {gradeOptions.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+
+                    </table>
+                    <button className='bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded' onClick={addRetakeRow}>Add Row</button>
+                </div>
+            </div>
         </div>
     </div>
 
