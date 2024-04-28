@@ -249,7 +249,7 @@ const CalculateCg = () => {
         return cgpa;
     };
 
-    return (<div className='mx-1 max-w-full'>
+    return (<div className='mx-2 max-w-full '>
         <p className='text-red-600 font-bold text-xs px-3 text-center w-fit mx-auto mb-10' id="label">Disclaimer: This is not the official calculator. The CGPA calculated may vary from the official transcript. Use at your own risk.</p>
         <p className={`font-bold text-lg w-fit mx-auto mb-10 ${textColor}`} id="label">{uName}</p>
         <div className='w-fit max-w-full overflow-hidden  lg:mx-auto md:mx-3 relative '>
@@ -302,7 +302,7 @@ const CalculateCg = () => {
                 />
             </div>
 
-            <div className="flex gap-10 flex-wrap ">
+            <div className="flex gap-x-10 flex-wrap ">
                 <div className="">
                     <table>
                         <thead>
@@ -357,8 +357,12 @@ const CalculateCg = () => {
 
                     <button className='bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded' onClick={addRow}>Add Row</button>
                 </div>
-                <div className=" ">
-                    <p className='text-xl font-semibold lg:mt-[-27px]'>Retake Calculation</p>
+                <div className="mt-3 ">
+                    <p className='text-xl font-semibold lg:mt-[-30px] flex items-center'>Retake Calculation
+                        <div className="tooltip" data-tip="Make sure total earned credit is greater then total retake credit.">
+                            <p className='px-[9px] w-fit ml-3 rounded-full border-black border ' >?</p>
+                        </div>
+                    </p>
                     <table>
                         <thead>
                             <tr>

@@ -50,7 +50,7 @@ function App() {
         <Navbar />
         <div className="h-full ">
           <Routes>
-            <Route path="/" element={<Connect4Game />} />
+            <Route path="/" element={<CalculateCg />} />
             <Route path="/solver/sudoku" element={<SudokuSolver />} />
             <Route path="/tictactoe" element={<TicTacToe />} />
             <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
