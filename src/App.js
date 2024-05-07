@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import reactGA from 'react-ga'
 import Footer from './Components/shared/Footer';
 import SudokuSolver from './Components/sudoku/SudokuSolver';
 import Navbar from './Components/shared/Navbar';
@@ -18,6 +19,9 @@ import About from './Components/About';
 import Error from './Components/Error';
 import MoneyManagement from './Components/MoneyManagement/MoneyManagement';
 import Connect4Game from './Components/Connect4/Connect4Game';
+import Courses from './Components/Courses/Courses';
+
+const trackingId = ""
 function App() {
   const getRandomHexColor = () => {
     const letters = '3456789abcdef';
@@ -64,6 +68,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/money-management" element={<MoneyManagement />} />
             <Route path="/Connect4" element={<Connect4Game />} />
+            <Route path="/courses" element={<Courses />} />
 
 
             <Route path="/*" element={<Error />} />
