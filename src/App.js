@@ -19,18 +19,12 @@ import About from './Components/About';
 import Error from './Components/Error';
 import MoneyManagement from './Components/MoneyManagement/MoneyManagement';
 import Connect4Game from './Components/Connect4/Connect4Game';
-import Courses from './Components/Courses/Courses';
 
 const trackingId = ""
 function App() {
   const getRandomHexColor = () => {
-    const letters = '3456789abcdef';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 13)];
-    }
-    color += "22"
-    return color;
+    
+    return "#eee";
   };
 
   const [backgroundColor, setBackgroundColor] = useState(getRandomHexColor);
@@ -68,7 +62,6 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/money-management" element={<MoneyManagement />} />
             <Route path="/Connect4" element={<Connect4Game />} />
-            <Route path="/courses" element={<Courses />} />
 
 
             <Route path="/*" element={<Error />} />

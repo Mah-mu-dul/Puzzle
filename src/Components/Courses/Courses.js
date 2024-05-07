@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styles from './t.module.css';
 
 function Courses() {
     const [filter, setFilter] = useState('');
@@ -43,8 +42,23 @@ function Courses() {
     // Your HTML content as a string
     const htmlContent = `
     <div>
-    
-    <table  id="myTable" mat-table="" class="" style="width: 100%; height: 400px;" role="table">
+    <style>
+        #myTable {
+          background-color: white;
+          border-collapse: collapse;
+          
+        }
+        #myTable th,
+        #myTable td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          width: auto;
+        }
+        #myTable tr:nth-child(odd) {
+          background-color: #f2f2f2;
+        }
+      </style>
+    <table  id="myTable" mat-table="" class="myTable" style="width: 100%; height: 400px;" role="table">
         <thead role="rowgroup">
             <tr  class="mat-header-row cdk-header-row ng-star-inserted">
                 <th > Course </th>
@@ -10275,17 +10289,40 @@ function Courses() {
 
     return (
         <div>
+            <div className="text-left md:text-center">
+
+                <h1 className="text-3xl  font-semibold">Simplifying Your Course Search</h1>
+                <br />
+                <h1 className=" text-xl ">This course list is for
+                    <span className="font-bold text-rose-500"> CSE </span>
+                    Mejor and
+                    <span className="font-bold text-rose-500"> Robotics </span>
+                    Minor
+                </h1>
+                <p className=" text-lg ">
+                    This is valid for the
+                    <span className="font-bold text-rose-500"> Summer 2024 </span>
+                    only, and if authority changes occur after
+                    <span className="font-bold text-rose-500"> May 8, 2024 </span>, it will not be updated.
+                    <br />
+                    <div className="tooltip" data-tip="This feature will assist you on the day of registration when IRAS does not display the courses before your time slot arrives.">
+                        <p className='px-[10px] w-fit ml-3 rounded-full border-black border ' >?</p>
+                    </div>
+                </p>
+            </div>
+            <br />
             <input
-                className="input bg-white"
+                className="input bg-white border"
                 type="text"
                 id="filterInput"
                 placeholder="Search for something..."
                 onChange={handleInputChange}
             />
-            <br /><br />
+            <br />
+            <br />
             {/* Render the HTML content using dangerouslySetInnerHTML */}
-            <div dangerouslySetInnerHTML={{ __html: filterTable(htmlContent) }} />
-        </div>
+            <div className="overflow-scroll" dangerouslySetInnerHTML={{ __html: filterTable(htmlContent) }} />
+        </div >
     );
 }
 

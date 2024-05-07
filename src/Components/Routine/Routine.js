@@ -1,8 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import CostCalculate from "./CostCalculate";
+import Courses from "../Courses/Courses.js";
 import html2canvas from 'html2canvas';
+
 
 import qr from '../../Images/qr.png'
 
@@ -181,10 +183,32 @@ const Routine = () => {
         setRoutine(updatedRoutine);
     };
 
+    useEffect(() => {
+        const handleScroll = () => {
+            // You can add more logic here if needed
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
 
 
     return (
-        <div className="p-4  w-full ">
+        <div className="p-4  w-full " id="top">
+            <button
+                className="fixed bottom-6 right-6 bg-blue-500 text-white px-4 py-[9px] z-10 rounded-full shadow-md bg-rose-600 transition duration-300"
+                onClick={scrollToTop}
+            >^</button>
             <h2 className="text-2xl mb-4 w-fit mx-auto text-rose-600">Make your course plan </h2>
             <h2 className="text-sm mb-4 w-fit mx-auto lg:hidden md:hidden text-center text-rose-600">For better view use Computer screen</h2>
             <div className="flex flex-col justify-center place-items-center">
@@ -290,8 +314,15 @@ const Routine = () => {
                 </button>
 
             </div>
-            <div className="">
+            <div className="divider"></div>
+
+            <div className="px-2">
                 <CostCalculate />
+            </div>
+            <div className="divider"></div>
+            <br />
+            <div className="px-2">
+                <Courses />
             </div>
         </div>
     );
