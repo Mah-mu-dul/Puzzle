@@ -1,0 +1,20 @@
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(5px);
+  }
+}
+
+.animate-letter {
+  display: inline-block;
+  animation: wave 5s linear infinite; /* Adjust the animation duration as needed */
+  transition: transform 0.2s; /* Adjust the transition duration as needed */
+}
