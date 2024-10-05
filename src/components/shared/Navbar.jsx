@@ -133,7 +133,7 @@ const Navbar = () => {
         </div>
         <div className="navbar-center text-3xl text-bold">
           <NavLink className={" font-serif"} to="/">
-            Easy Puzzle
+            <h1 id="sitename">Easy Puzzle</h1>
           </NavLink>
         </div>
         <div className="navbar-end">

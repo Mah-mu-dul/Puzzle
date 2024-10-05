@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "easy-6355a"
+    "default": "easy-6355a",
+        "site": "easypuzzle",
+
   }
 }
