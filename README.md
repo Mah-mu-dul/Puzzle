@@ -1,4 +1,6 @@
-# EasyPuzzle
+# EasyPuzzle 
+## [EasyPuzzle](https://easypuzzle.web.app/) https://easypuzzle.web.app/.
+
 
 EasyPuzzle is a comprehensive web application designed to assist users in managing their academic schedules, calculating CGPA, and converting text to Morse code. This application is built using React and provides a user-friendly interface for various educational tools. Below is a detailed overview of the components included in this project, installation instructions, usage guidelines, and contribution details.
 
