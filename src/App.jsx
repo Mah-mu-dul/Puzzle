@@ -19,6 +19,9 @@ import Connect4Game from "./components/Connect4/Connect4Game.jsx";
 import TranscriptAnalyzer from "./Components/TranscriptAnalyzer/TranscriptAnalyzer2.jsx";
 import AluminumProfileLengthCalculator from "./Components/calculators/AluminumProfileLengthCalculator.jsx";
 import CalculateCg from "./components/CGCalculator/CalculateCg.jsx";
+import Home from "./components/Home.jsx";
+import CostCalculate from "./components/Routine/CostCalculate.jsx";
+import RetakeAssistant from "./Components/Routine/RetakeAssistant.jsx";
 
 const trackingId = "";
 function App() {
@@ -38,7 +41,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="bg-white max-w-[1800px] mx-auto ">
+    <div className="bg-[#FAFBFC] max-w-[1800px] mx-auto overflow-hidden">
       <div
         className={` flex flex-col justify-between text-black  w-full pb-10 min-h-screen transition-background duration-1000`}
         style={{ backgroundColor, transition: "background 2s" }}
@@ -46,7 +49,7 @@ function App() {
         <Navbar />
         <div className="h-full ">
           <Routes>
-            <Route path="/" element={<CalculateCg />} />
+            <Route path="/" element={<Home />} />
             <Route path="/solver/sudoku" element={<SudokuSolver />} />
             <Route path="/tictactoe" element={<TicTacToe />} />
             <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
@@ -60,6 +63,8 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/money-management" element={<MoneyManagement />} />
             <Route path="/Connect4" element={<Connect4Game />} />
+            <Route path="/cost-calculator" element={<CostCalculate />} />
+            <Route path="/retake-assistant" element={<RetakeAssistant />} />
             <Route
               path="/stickCalculator"
               element={<AluminumProfileLengthCalculator />}

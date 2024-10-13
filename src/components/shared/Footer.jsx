@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <div className="w-fit mx-auto ">
       <p className="text-center text-sm">
-       <p className="text-xl"> © Mahmudul Hasan</p> Department of Computer
+        <p className="text-xl"> © Mahmudul Hasan</p> Department of Computer
         Science and Engineering <br /> Independent University, Bangladesh <br />
       </p>
       <div className="flex w-fit mx-auto mt-3">
@@ -12,7 +12,7 @@ const Footer = () => {
           <img
             className="w-5 mx-3"
             src="https://img.icons8.com/?size=1x&id=1349&format=png"
-            alt=""
+            alt="IUB CGPA Calculator - EasyPuzzle"
           />
         </a>
         <a
@@ -23,7 +23,7 @@ const Footer = () => {
           <img
             className="w-5 mx-3"
             src="https://img.icons8.com/?size=1x&id=118467&format=png"
-            alt=""
+            alt="IUB CGPA Calculator - EasyPuzzle"
           />
         </a>
         <a
@@ -34,7 +34,7 @@ const Footer = () => {
           <img
             className="w-5 mx-3"
             src="https://img.icons8.com/?size=1x&id=8808&format=png"
-            alt=""
+            alt="IUB CGPA Calculator - EasyPuzzle"
           />
         </a>
         <a
@@ -45,7 +45,7 @@ const Footer = () => {
           <img
             className="w-5 mx-3"
             src="https://img.icons8.com/?size=1x&id=3tC9EQumUAuq&format=png"
-            alt=""
+            alt="IUB CGPA Calculator - EasyPuzzle"
           />
         </a>
         <a

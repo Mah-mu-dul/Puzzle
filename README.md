@@ -1,10 +1,11 @@
-# EasyPuzzle 
-## [EasyPuzzle](https://easypuzzle.web.app/) https://easypuzzle.web.app/.
+# EasyPuzzle
 
+## [EasyPuzzle](https://easypuzzle.web.app/) https://easypuzzle.web.app/.
 
 EasyPuzzle is a comprehensive web application designed to assist users in managing their academic schedules, calculating CGPA, and converting text to Morse code. This application is built using React and provides a user-friendly interface for various educational tools. Below is a detailed overview of the components included in this project, installation instructions, usage guidelines, and contribution details.
 
 ## Table of Contents
+
 - [Features](#features)
 - [Components Overview](#components-overview)
   - [Routine.jsx](#1-routinejsx)
@@ -20,6 +21,7 @@ EasyPuzzle is a comprehensive web application designed to assist users in managi
 - [Live Demo](#live-demo)
 
 ## Features
+
 - **Course Management:** Users can add, edit, and delete courses from their schedule.
 - **CGPA Calculation:** Calculate current CGPA based on grades and credits, including retake options.
 - **Morse Code Conversion:** Convert text input into Morse code for educational purposes.
@@ -29,9 +31,10 @@ EasyPuzzle is a comprehensive web application designed to assist users in managi
 ## Components Overview
 
 ### 1. **Routine.jsx**
+
 - **Location:** `src/components/Routine/Routine.jsx`
-- **Description:** 
-  - This component allows users to create and manage their course schedules. 
+- **Description:**
+  - This component allows users to create and manage their course schedules.
   - Users can input course names, select days and times, and visualize their schedules in a table format.
   - The component supports downloading the schedule as a PDF or PNG file for easy sharing and printing.
   - **Key Features:**
@@ -40,8 +43,9 @@ EasyPuzzle is a comprehensive web application designed to assist users in managi
     - Download functionality for schedules.
 
 ### 2. **CalculateCg.jsx**
+
 - **Location:** `src/components/CGCalculator/CalculateCg.jsx`
-- **Description:** 
+- **Description:**
   - This component calculates the CGPA based on user input for courses, grades, and credits.
   - It supports retake calculations, allowing users to input previous grades and see how retakes affect their overall CGPA.
   - Users can select their university's grading system, which adjusts the grading scale accordingly.
@@ -51,8 +55,9 @@ EasyPuzzle is a comprehensive web application designed to assist users in managi
     - Support for multiple university grading systems.
 
 ### 3. **MorseCodeConverter.jsx**
+
 - **Location:** `src/components/MorseCodeConverter.jsx`
-- **Description:** 
+- **Description:**
   - This component converts text input into Morse code.
   - Users can enter any text, and the application will output the corresponding Morse code representation.
   - **Key Features:**
@@ -61,8 +66,9 @@ EasyPuzzle is a comprehensive web application designed to assist users in managi
     - Supports a wide range of characters, including letters, numbers, and punctuation.
 
 ### 4. **TicTacToe.jsx**
+
 - **Location:** `src/components/ticTacToe/TicTacToe.jsx`
-- **Description:** 
+- **Description:**
   - A simple Tic Tac Toe game where users can play against the computer or a friend.
   - The game tracks wins for both players and allows for resetting the game.
   - **Key Features:**
@@ -71,16 +77,18 @@ EasyPuzzle is a comprehensive web application designed to assist users in managi
     - Option to play against the computer with varying difficulty levels.
 
 ### 5. **Sudoku.jsx**
+
 - **Location:** `src/components/sudoku/Sudoku.jsx`
-- **Description:** 
+- **Description:**
   - A placeholder component for a Sudoku game.
   - Currently, it displays a simple message indicating that the component is not yet implemented.
   - **Future Plans:**
     - Implement a fully functional Sudoku game with difficulty levels and hints.
 
 ### 6. **package.json**
+
 - **Location:** `package.json`
-- **Description:** 
+- **Description:**
   - This file contains metadata about the project, including dependencies, scripts, and project configuration.
   - It defines the project’s name, version, and the libraries used to build the application.
 
@@ -89,6 +97,7 @@ EasyPuzzle is a comprehensive web application designed to assist users in managi
 To get started with EasyPuzzle, follow these steps:
 
 1. **Clone the Repository:**
+
    ```bash
    git clone <repository-url>
    cd easypuzzle
@@ -96,6 +105,7 @@ To get started with EasyPuzzle, follow these steps:
 
 2. **Install Dependencies:**
    Make sure you have Node.js installed. Then run:
+
    ```bash
    npm install
    ```
@@ -117,6 +127,7 @@ npm run dev
 This will start the development server, and you can access the application in your web browser at `http://localhost:3000`.
 
 ### Application Features
+
 - **Course Management:** Navigate to the Course Management section to add or edit your courses.
 - **CGPA Calculation:** Use the CGPA Calculator to input your courses and grades.
 - **Morse Code Conversion:** Enter text in the Morse Code Converter to see the output.
@@ -127,7 +138,7 @@ This will start the development server, and you can access the application in yo
 Contributions are welcome! If you have suggestions or improvements, feel free to open an issue or submit a pull request. Here’s how you can contribute:
 
 1. **Fork the Repository:** Click on the "Fork" button at the top right of the repository page.
-2. **Create a New Branch:** 
+2. **Create a New Branch:**
    ```bash
    git checkout -b feature/YourFeatureName
    ```

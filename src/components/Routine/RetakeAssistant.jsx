@@ -95,6 +95,7 @@ const RetakeAssistant = () => {
 
   return (
     <>
+      <h1 className="text-3xl text-center mb-10 text-rose-600">Under development</h1>
       <button
         className="bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded"
         onClick={() => setIsOpen(true)}

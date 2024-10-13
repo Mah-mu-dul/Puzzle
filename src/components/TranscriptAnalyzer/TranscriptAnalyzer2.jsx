@@ -165,13 +165,16 @@ const TranscriptAnalyzer = ({
   };
 
   return (
-    <div className="border-2 border-rose-400 p-2 rounded">
+    <div className="bg-indigo-50 hover:bg-indigo-100 p-8 rounded-xl">
+      
+
       <h3 className="text-lg font-semibold mb-2">Upload Your Transcript</h3>
       <input
         type="file"
         accept=".pdf"
         onChange={handleFileChange}
-        className="file-input file-input-bordered w-full max-w-xs"
+        className="file-input bg-indigo-100 hover:bg-indigo-50 file-input-bordered w-full max-w-xs"
+        style={{ backgroundColor: "bg-indigo-100" }}
       />
       {loading && (
         <div className="flex justify-center items-center mt-4">
