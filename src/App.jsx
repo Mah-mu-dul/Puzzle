@@ -22,6 +22,8 @@ import CalculateCg from "./components/CGCalculator/CalculateCg.jsx";
 import Home from "./components/Home.jsx";
 import CostCalculate from "./components/Routine/CostCalculate.jsx";
 import RetakeAssistant from "./Components/Routine/RetakeAssistant.jsx";
+import StickCalculator from "./blogs/stickcalculator/StickCalculator.jsx";
+import Blogs from "./blogs/Blogs.jsx";
 
 const trackingId = "";
 function App() {
@@ -72,6 +74,12 @@ function App() {
             <Route
               path="/transcript-analyzer"
               element={<TranscriptAnalyzer />}
+            />
+
+            <Route path="/blogs" element={<Blogs />} />
+            <Route
+              path="/blog/stick-calculator"
+              element={<StickCalculator />}
             />
 
             <Route path="/*" element={<Error />} />

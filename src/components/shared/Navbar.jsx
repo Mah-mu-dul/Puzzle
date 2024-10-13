@@ -14,6 +14,7 @@ const Navbar = () => {
     { to: "/routine", label: "Routine" },
     { to: "/qr", label: "QR" },
     { to: "/stickCalculator", label: "Stick Calculator" },
+    { to: "/blogs", label: "Blogs" },
   ];
 
   const NavItem = ({ to, label }) => (
