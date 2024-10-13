@@ -77,14 +77,14 @@ const tools = [
     iconColor: "text-red-600",
   },
 
-  {
-    title: "Games",
-    description: "2048, TicTacToe, Connect4",
-    icon: <GamepadIcon className="w-6 h-6" />,
-    path: "/game2048",
-    color: "bg-teal-50 hover:bg-teal-100 ",
-    iconColor: "text-teal-600",
-  },
+  // {
+  //   title: "Games 2048",
+  //   description: "2048, TicTacToe, Connect4",
+  //   icon: <GamepadIcon className="w-6 h-6" />,
+  //   path: "/game2048",
+  //   color: "bg-teal-50 hover:bg-teal-100 ",
+  //   iconColor: "text-teal-600",
+  // },
   {
     title: "Transcript Analyzer",
     description: "Analyze academic transcripts",

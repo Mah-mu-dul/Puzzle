@@ -1,20 +1,32 @@
-import React, { useState, useEffect } from "react";
-
-const AluminumProfileLengthCalculator = () => {
+import React, { useState, useEffect, useRef } from "react";
+import { jsPDF } from "jspdf";
+import html2pdf from "html2pdf.js";
+const StickLengthCalculator = () => {
   const [partLengths, setPartLengths] = useState([]);
   const [currentPartLength, setCurrentPartLength] = useState("");
   const [stickLength, setStickLength] = useState(100);
   const [result, setResult] = useState("");
   const [cutBreakdown, setCutBreakdown] = useState([]);
+  const [warningMessage, setWarningMessage] = useState("");
 
   useEffect(() => {
-    cutSticks(partLengths, stickLength);
+    binPacking(partLengths, stickLength);
   }, [partLengths, stickLength]);
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && currentPartLength) {
-      setPartLengths([...partLengths, Number(currentPartLength)]);
+      const length = Number(currentPartLength);
+      // Check for negative or zero input and ensure part length is not bigger than stick length
+      if (length <= 0) {
+        setWarningMessage("Part length must be a positive number.");
+        return;
+      } else if (length > stickLength) {
+        setWarningMessage("Part length cannot exceed the stick length.");
+        return;
+      }
+      setPartLengths([...partLengths, length]);
       setCurrentPartLength("");
+      setWarningMessage("");
     }
   };
 
@@ -22,59 +34,91 @@ const AluminumProfileLengthCalculator = () => {
     setPartLengths(partLengths.filter((_, i) => i !== index));
   };
 
-  //   new one
-  function cutSticks(ps, stickLength) {
-    let parts = [...ps];
+  const handleStickLengthChange = (e) => {
+    const newStickLength = Number(e.target.value);
+    // Check for negative or zero input and ensure no part length exceeds the stick length
+    if (newStickLength <= 0) {
+      setWarningMessage("Stick length must be a positive number.");
+      return;
+    } else if (partLengths.some((length) => length > newStickLength)) {
+      setWarningMessage(
+        "Stick length cannot be less than the maximum part length."
+      );
+    } else {
+      setWarningMessage("");
+    }
+    setStickLength(newStickLength);
+  };
 
-    // Sort the parts in descending order (greedy approach)
-    parts.sort((a, b) => b - a);
+  // New bin packing function
+  function binPacking(weights, stickLength) {
+    let bins = []; // Array to hold the bins
 
-    // Array to store the breakdown of cuts for each stick
-    let sticks = [];
+    // Make a copy of weights and sort it in descending order for better packing
+    const sortedWeights = [...weights].sort((a, b) => b - a);
 
-    // While there are parts left to place
-    while (parts.length > 0) {
-      let currentStick = [];
-      let remainingLength = stickLength;
+    for (let weight of sortedWeights) {
+      let placed = false;
 
-      // Try to fit as many parts as possible into the current stick
-      for (let i = 0; i < parts.length; i++) {
-        if (parts[i] <= remainingLength) {
-          currentStick.push(parts[i]);
-          remainingLength -= parts[i];
-          // Remove the part from the list
-          parts.splice(i, 1);
-          i--; // Adjust index after removing the part
+      // Try to place the weight in an existing bin
+      for (let bin of bins) {
+        if (bin.remaining >= weight) {
+          bin.parts.push(weight);
+          bin.remaining -= weight;
+          placed = true;
+          break;
         }
       }
 
-      // Add the current stick's breakdown to the list of sticks
-      sticks.push(currentStick);
+      // If the weight couldn't be placed, create a new bin
+      if (!placed) {
+        bins.push({ parts: [weight], remaining: stickLength - weight });
+      }
     }
 
     // Output the breakdown
-    setCutBreakdown(sticks);
+    const sticks = bins.map((bin) => bin.parts);
 
-    // set the total number of sticks used
-    setResult(`Minimum number of sticks needed: ${sticks.length}`);
+    setCutBreakdown(sticks);
+    setResult(
+      <>
+        Minimum number of sticks needed:{" "}
+        <span className="text-rose-600 text-xl ">{bins.length} units</span>
+      </>
+    );
   }
 
-  
+  const downloadCuttingBreakdown = () => {
+    var element = document.getElementById("cuttingBreakdown");
+    var opt = {
+      margin: 1,
+      filename: "Stick cutting breakdown.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+
+    // Old monolithic-style usage:
+    html2pdf(element, opt);
+  };
 
   const totalUsed = partLengths.reduce((sum, length) => sum + length, 0);
   const totalWaste = stickLength * cutBreakdown.length - totalUsed;
 
   return (
-    <div className="w-full max-w-4xl">
+    <div className="w-full max-w-7xl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center">
-        Aluminum Profile Length Calculator
+        Stick Length Calculator
       </h2>
       <p className="mb-4 text-gray-700 text-center">
-        This calculator determines the minimum number of aluminum profile sticks
-        needed for your project, optimizing material usage.
+        This calculator determines the minimum number of sticks needed for your
+        project, optimizing material usage.
       </p>
-      <div className="p-4 bg-gray-100 flex flex-col md:flex-row gap-10 rounded-lg shadow-md">
+      <div className="p-4 bg-gray-100 flex flex-col md:flex-row gap-10 rounded-lg shadow-md ">
         <div className="mb-4 w-full md:w-1/2 border-2 border-rose-400 rounded p-5">
+          {warningMessage && (
+            <p className="text-red-600 text-center mt-4">{warningMessage}</p>
+          )}
           <div className="flex gap-10">
             <div>
               <label className="block mb-2 font-semibold">
@@ -96,7 +140,7 @@ const AluminumProfileLengthCalculator = () => {
               <input
                 type="number"
                 value={stickLength}
-                onChange={(e) => setStickLength(Number(e.target.value))}
+                onChange={handleStickLengthChange}
                 className="bg-transparent rounded border-2 border-rose-400 w-32 px-2 py-1"
                 placeholder="e.g., 100"
               />
@@ -134,29 +178,45 @@ const AluminumProfileLengthCalculator = () => {
           </div>
         </div>
         <div className="w-full md:w-1/2">
-          <h3 className="font-semibold mb-2">Cutting Breakdown:</h3>
-          <ul className="space-y-4">
-            {cutBreakdown.map((stick, stickIndex) => (
-              <li key={stickIndex} className="border-l-4 border-blue-500 pl-4">
-                <div className="text-left">
-                  <strong>Stick {stickIndex + 1}:</strong>
-                  <ul className="list-disc list-inside">
-                    {stick.map((part, partIndex) => (
-                      <li key={partIndex}>{part} units</li>
-                    ))}
-                  </ul>
-                  <span className="text-sm text-gray-600">
-                    (Remaining: {stickLength - stick.reduce((a, b) => a + b, 0)}{" "}
-                    units)
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="" id="cuttingBreakdown">
+            <h3 className="font-semibold mb-2">Cutting Breakdown:</h3>
+            <ul className="space-y-4 flex flex-wrap justify-between gap-5">
+              {cutBreakdown.map((stick, stickIndex) => (
+                <li
+                  key={stickIndex}
+                  className="border-l-4 w-40 h-fit border-blue-500 pl-4"
+                >
+                  <div className="text-left">
+                    <strong>Stick {stickIndex + 1}:</strong>
+                    <ul className="list-disc list-inside">
+                      {stick.map((part, partIndex) => (
+                        <li key={partIndex}>{part} units</li>
+                      ))}
+                    </ul>
+                    <span className="text-sm text-gray-600">
+                      (Remaining:{" "}
+                      {stickLength - stick.reduce((a, b) => a + b, 0)} units)
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {cutBreakdown.length > 0 && (
+            <button
+              onClick={downloadCuttingBreakdown}
+              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Download Cutting Breakdown
+            </button>
+          )}
         </div>
+      </div>
+      <div className="max-w-4xl mx-auto px-4 mb-20 google_adscene">
+        <div className="w-full h-[50px] rounded-lg flex items-center justify-center"></div>
       </div>
     </div>
   );
 };
 
-export default AluminumProfileLengthCalculator;
+export default StickLengthCalculator;
