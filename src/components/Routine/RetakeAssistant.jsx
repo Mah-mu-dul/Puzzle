@@ -1,141 +1,160 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
+const gradePoints = {
+  A: 4.0,
+  "A-": 3.7,
+  "B+": 3.3,
+  B: 3.0,
+  "B-": 2.7,
+  "C+": 2.3,
+  C: 2.0,
+  "C-": 1.7,
+  "D+": 1.3,
+  D: 1.0,
+  F: 0.0,
+};
+
 const RetakeAssistant = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState(null);
-  const [courses, setCourses] = useState([]); // Changed to store all courses
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState(null);
   const [name, setName] = useState("");
-  const [previousCGPA, setPreviousCGPA] = useState("");
-  const [previousEarnedCredit, setPreviousEarnedCredit] = useState("");
-  const [targetCGPA, setTargetCGPA] = useState(""); // Added state for target CGPA
+  const [currentCGPA, setCurrentCGPA] = useState("");
+  const [targetCGPA, setTargetCGPA] = useState("");
+  const [earnedCredits, setEarnedCredits] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [retakeSuggestions, setRetakeSuggestions] = useState([]);
+  const modalRef = useRef(null);
 
-  const handleUpload = () => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const typedarray = new Uint8Array(event.target.result);
-        const pdf = await pdfjsLib.getDocument(typedarray).promise;
-        let fullText = [];
+  const calculateRetakeSuggestions = () => {
+    if (!targetCGPA || !currentCGPA || !earnedCredits || courses.length === 0)
+      return;
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const textContent = await page.getTextContent();
-          let pageText = "";
-          let currentLine = "";
+    // Sort courses by potential GPA improvement (current grade vs possible A grade)
+    const sortedCourses = courses
+      .map((course) => {
+        const currentGradePoint = parseFloat(course.gradePoint);
+        const potentialImprovement = 4.0 - currentGradePoint;
+        return {
+          ...course,
+          potentialImprovement,
+          weightedImprovement: potentialImprovement * course.credit,
+        };
+      })
+      .sort((a, b) => b.weightedImprovement - a.weightedImprovement);
 
-          for (const item of textContent.items) {
-            currentLine += item.str + " ";
-            if (item.hasEOL) {
-              pageText += currentLine.trim() + "\n";
-              currentLine = "";
-            }
-          }
+    // Calculate how much GPA points need to be improved
+    const currentPoints = parseFloat(currentCGPA) * parseFloat(earnedCredits);
+    const targetPoints = parseFloat(targetCGPA) * parseFloat(earnedCredits);
+    const pointsNeeded = targetPoints - currentPoints;
 
-          if (currentLine.trim()) {
-            pageText += currentLine.trim() + "\n";
-          }
+    let suggestions = [];
+    let runningImprovement = 0;
 
-          const headerText =
-            "Course Course Title Type Grade Course Credit Credit Earned Credit for GPA Grade Point";
-          fullText = fullText.concat(
-            pageText
-              .split(headerText)
-              .join("")
-              .split("\n")
-              .filter((line) => line.trim() !== "")
-          );
-        }
-
-        // Log the extracted text for debugging
-        console.log("Extracted Text:", fullText);
-
-        // Extract and set name
-        const extractedName = fullText[2].split("   ")[1];
-        if (extractedName) setName(extractedName);
-
-        // Extract and set previous CGPA
-        const extractedCGPA = fullText[fullText.length - 1].split("   ").pop();
-        if (!isNaN(parseFloat(extractedCGPA))) setPreviousCGPA(extractedCGPA);
-
-        // Extract and set total earned credit
-        const totalEarnedCredit = fullText[fullText.length - 3]
-          .split("   ")
-          .pop();
-        const parsedCredit = parseInt(totalEarnedCredit, 10);
-        if (!isNaN(parsedCredit)) setPreviousEarnedCredit(parsedCredit);
-
-        // Process course information
-        const courseInfoRaw = fullText.slice(6, -4);
-        let allCourses = {}; // Use an object to store courses by course code
-
-        for (const line of courseInfoRaw) {
-          if (!line.startsWith("Course") && line.trim() !== "") {
-            const courseDetails = line
-              .split("   ")
-              .filter((item) => item.trim() !== "");
-            const courseCode = courseDetails[0]; // Assuming the first item is the course code
-            // Store the last occurrence of the course details
-            allCourses[courseCode] = courseDetails;
-          }
-        }
-
-        // Convert the object back to an array
-        const uniqueCourses = Object.values(allCourses);
-
-        console.log("Unique Courses:", uniqueCourses); // Log unique courses
-
-        setCourses(uniqueCourses); // Set unique courses
-      };
-      reader.readAsArrayBuffer(file);
-    } else {
-      console.log("No file selected");
+    // Add courses to suggestions until we reach the target CGPA
+    for (const course of sortedCourses) {
+      if (runningImprovement >= pointsNeeded) break;
+      if (course.potentialImprovement > 0) {
+        suggestions.push({
+          ...course,
+          suggestedGrade: "A",
+          potentialImprovement: course.potentialImprovement.toFixed(2),
+        });
+        runningImprovement += course.weightedImprovement;
+      }
     }
+
+    setRetakeSuggestions(suggestions);
   };
 
+  // ... rest of the parsing logic similar to TranscriptAnalyzer ...
+
   return (
-    <>
-      <h1 className="text-3xl text-center mb-10 text-rose-600">Under development</h1>
-      <button
-        className="bg-transparent px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-amber-200 border-2 border-rose-400 rounded"
-        onClick={() => setIsOpen(true)}
-      >
-        Retake Assistant
-      </button>
-      {isOpen && (
-        <dialog className="modal" open>
-          <div className="modal-box bg-white">
-            <h3 className="font-bold text-lg">Upload Transcript</h3>
-            <p className="py-4">Please upload your transcript file:</p>
-            <input
-              type="file"
-              accept=".pdf"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
-            <br />
-            <br />
-            <label htmlFor="targetcg">Target CGPA:</label>
-            <input
-              type="number"
-              min="0.00"
-              max="4.00"
-              step="0.01"
-              id="targetcg"
-              placeholder="Target CGPA"
-              onChange={(e) => setTargetCGPA(e.target.value)} // Updated to use targetCGPA state
-              className="bg-transparent px-2 w-28 ml-2 rounded border-2 border-rose-400 "
-            />
-            <br />
-            <button className="btn mt-4" onClick={handleUpload}>
-              Submit
-            </button>
-          </div>
-          <form method="dialog" className="modal-backdrop">
-            <button onClick={() => setIsOpen(false)}>close</button>
-          </form>
-        </dialog>
+    <div className="container mx-auto p-4 max-w-4xl bg-white shadow rounded-lg">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Retake Assistant</h1>
+
+      <div className="mb-6">
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={(e) => setFile(e.target.files[0])}
+          className="file-input file-input-bordered w-full max-w-xs"
+        />
+
+        <div className="mt-4">
+          <label htmlFor="targetCGPA" className="label">Target CGPA:</label>
+          <input
+            id="targetCGPA"
+            type="number"
+            step="0.01"
+            min="0"
+            max="4.00"
+            value={targetCGPA}
+            onChange={(e) => setTargetCGPA(e.target.value)}
+            className="input input-bordered w-full max-w-xs"
+          />
+        </div>
+
+        <button
+          onClick={calculateRetakeSuggestions}
+          className="btn btn-primary mt-4"
+          disabled={!targetCGPA || !courses.length}
+        >
+          Calculate Suggestions
+        </button>
+      </div>
+
+      {retakeSuggestions.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-700">Retake Suggestions</h2>
+          <table className="table w-full">
+            <thead>
+              <tr>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th>Current Grade</th>
+                <th>Credits</th>
+                <th>Potential Improvement</th>
+              </tr>
+            </thead>
+            <tbody>
+              {retakeSuggestions.map((course, index) => (
+                <tr key={index} className="border-b">
+                  <td>{course.courseCode}</td>
+                  <td>{course.courseTitle}</td>
+                  <td>{course.grade}</td>
+                  <td>{course.credit}</td>
+                  <td>{course.potentialImprovement}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
-    </>
+
+      {/* Error Modal */}
+      <input
+        type="checkbox"
+        id="error-modal"
+        className="modal-toggle"
+        ref={modalRef}
+      />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-red-500">Error</h3>
+          <p className="py-4 text-gray-700">{error}</p>
+          <div className="modal-action">
+            <label htmlFor="error-modal" className="btn">
+              Close
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

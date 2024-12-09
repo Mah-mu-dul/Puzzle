@@ -165,7 +165,7 @@ const TranscriptAnalyzer = ({
   };
 
   return (
-    <div className="bg-indigo-50 hover:bg-indigo-100 p-8 rounded-xl">
+    <div className="bg-indigo-50 shadow-xl hover:bg-indigo-100 p-8 rounded-xl">
       
 
       <h3 className="text-lg font-semibold mb-2">Upload Your Transcript</h3>

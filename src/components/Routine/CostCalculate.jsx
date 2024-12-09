@@ -32,7 +32,7 @@ function CostCalculate() {
   };
 
   return (
-    <div className="">
+    <div className="p-3">
       <h2 className="text-center text-xl mt-10 text-rose-600">
         Course Cost Calculator
       </h2>
@@ -126,15 +126,15 @@ function CostCalculate() {
             </Link>
           </div>
           <div className="w-full lg:w-1/5  md:w-1/3 sm:w-full">
-            <Link to="/cost-calculator">
+            <Link to="/routine">
               <div className="p-4 rounded-xl h-full bg-rose-50 hover:bg-rose-100 transition-all duration-300 transform hover:scale-105">
                 <div className="text-rose-600 mb-2">
-                  <Calculator className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                 </div>
                 <h3 className="text-md font-semibold text-gray-900 mb-1">
-                  Cost Calculator
+                  Class Routine
                 </h3>
-                <p className="text-gray-600">Calculate your credit cost</p>
+                <p className="text-gray-600">Make your academic Routine.</p>
               </div>
             </Link>
           </div>

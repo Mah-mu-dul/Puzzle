@@ -6,25 +6,21 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { to: "/solver/sudoku", label: "Sudoku" },
+    { to: "/calculate-cg", label: "Calculate CG" },
+    { to: "/routine", label: "Routine" },
+    { to: "/stickCalculator", label: "Stick Calculator" },
+    { to: "/money-management", label: "Money Management" },
     { to: "/tictactoe", label: "Tic Tac Toe" },
     { to: "/connect4", label: "Connect 4" },
-    { to: "/calculate-cg", label: "Calculate CG" },
-    { to: "/money-management", label: "Money Management" },
-    { to: "/routine", label: "Routine" },
+    { to: "/solver/sudoku", label: "Sudoku" },
     { to: "/qr", label: "QR" },
-    { to: "/stickCalculator", label: "Stick Calculator" },
     { to: "/blogs", label: "Blogs" },
   ];
 
   const NavItem = ({ to, label }) => (
     <NavLink
       to={to}
-      className={({ isActive }) =>
-        `text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 relative group ${
-          isActive ? "text-blue-600" : ""
-        }`
-      }
+      className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 relative group before:absolute before:inset-0 before:mx-auto before:my-auto before:w-0 before:h-full before:bg-blue-600 before:transition-all before:duration-200 before:ease-in-out before:group-hover:w-full"
     >
       {label}
       <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left"></span>

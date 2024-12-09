@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2pdf from "html2pdf.js";
+import { Link } from "react-router-dom";
 const StickLengthCalculator = () => {
-  const [partLengths, setPartLengths] = useState([]);
+  const [partLengths, setPartLengths] = useState(
+    JSON.parse(localStorage.getItem("partLengths")) || []
+  );
   const [currentPartLength, setCurrentPartLength] = useState("");
   const [stickLength, setStickLength] = useState(100);
   const [result, setResult] = useState("");
@@ -13,8 +16,21 @@ const StickLengthCalculator = () => {
     binPacking(partLengths, stickLength);
   }, [partLengths, stickLength]);
 
+  useEffect(() => {
+    const data = localStorage.getItem("partLengths");
+    if (data) {
+      setPartLengths(JSON.parse(data));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("partLengths", JSON.stringify(partLengths));
+  }, [partLengths]);
+
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && currentPartLength) {
+      setWarningMessage("entered");
+      e.preventDefault(); // Prevent the default action of moving to the next input
       const length = Number(currentPartLength);
       // Check for negative or zero input and ensure part length is not bigger than stick length
       if (length <= 0) {
@@ -82,8 +98,10 @@ const StickLengthCalculator = () => {
     setCutBreakdown(sticks);
     setResult(
       <>
-        Minimum number of sticks needed:{" "}
-        <span className="text-rose-600 text-xl ">{bins.length} units</span>
+        Minimum sticks needed:{" "}
+        <span className="text-rose-600 text-xl ">
+          {bins.length} {bins.length > 1 ? "units" : "unit"}
+        </span>
       </>
     );
   }
@@ -107,7 +125,7 @@ const StickLengthCalculator = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center text-teal-600">
+      <h2 className="text-2xl font-bold  text-center text-teal-600">
         Stick Length Calculator
       </h2>
       <p className="mb-4 text-gray-800 text-center">
@@ -115,24 +133,11 @@ const StickLengthCalculator = () => {
         project, optimizing material usage.
       </p>
       <div className="p-4 bg-blue-50 flex flex-col md:flex-row gap-10 rounded-lg shadow-md ">
-        <div className="mb-4 w-full md:w-1/2 border-2 border-teal-500 rounded p-5">
+        <div className="mb-4 w-full md:w-1/2 border-2 border-teal-500 rounded p-3">
           {warningMessage && (
             <p className="text-red-500 text-center mt-4">{warningMessage}</p>
           )}
           <div className="flex gap-10">
-            <div>
-              <label className="block mb-2 font-semibold text-teal-600">
-                Enter part length:
-              </label>
-              <input
-                type="number"
-                value={currentPartLength}
-                onChange={(e) => setCurrentPartLength(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="bg-transparent w-32 rounded border-2 border-teal-500 px-2 py-1"
-                placeholder="e.g., 10"
-              />
-            </div>
             <div>
               <label className="block mb-2 font-semibold text-teal-600">
                 Enter stick length:
@@ -143,6 +148,19 @@ const StickLengthCalculator = () => {
                 onChange={handleStickLengthChange}
                 className="bg-transparent rounded border-2 border-teal-500 w-32 px-2 py-1"
                 placeholder="e.g., 100"
+              />
+            </div>
+            <div>
+              <label className="block mb-2 font-semibold text-teal-600">
+                Enter part length:
+              </label>
+              <input
+                type="number"
+                value={currentPartLength}
+                onChange={(e) => setCurrentPartLength(e.target.value)}
+                onKeyDown={handleKeyPress}
+                className="bg-transparent w-32 rounded border-2 border-teal-500 px-2 py-1"
+                placeholder="e.g., 10"
               />
             </div>
           </div>
@@ -175,33 +193,47 @@ const StickLengthCalculator = () => {
               Total Waste:{" "}
               <span className="text-teal-500">{totalWaste} units</span>
             </p>
+            {partLengths.length > 0 && (
+              <button
+                onClick={() => {
+                  if (
+                    window.confirm("Are you sure you want to remove all parts?")
+                  ) {
+                    setPartLengths([]);
+                  }
+                }}
+                className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Remove All Parts
+              </button>
+            )}
           </div>
         </div>
-        <div className="w-full md:w-1/2">
+        <div className="mb-4 w-full md:w-1/2 border-2 border-teal-500 rounded p-3">
           <div className="" id="cuttingBreakdown">
-            <h3 className="font-semibold mb-2 text-teal-600">
-              Cutting Breakdown:
-            </h3>
-            <ul className="space-y-4 flex flex-wrap justify-between gap-5">
-              {cutBreakdown.map((stick, stickIndex) => (
-                <li
-                  key={stickIndex}
-                  className="border-l-4 w-40 h-fit border-teal-500 pl-4"
-                >
-                  <div className="text-left">
-                    <strong>Stick {stickIndex + 1}:</strong>
-                    <ul className="list-disc list-inside">
-                      {stick.map((part, partIndex) => (
-                        <li key={partIndex}>{part} units</li>
-                      ))}
-                    </ul>
-                    <span className="text-sm text-gray-700">
-                      (Remaining:{" "}
-                      {stickLength - stick.reduce((a, b) => a + b, 0)} units)
-                    </span>
-                  </div>
-                </li>
-              ))}
+            <h3 className="font-semibold mb-2 ">Cutting Breakdown:</h3>
+            <ul className=" flex flex-wrap justify-between gap-3">
+              {cutBreakdown
+                .sort((a, b) => b.length - a.length)
+                .map((stick, stickIndex) => (
+                  <li
+                    key={stickIndex}
+                    className="border-l-4 w-40 h-fit border-teal-500 pl-4"
+                  >
+                    <div className="text-left">
+                      <strong>Stick {stickIndex + 1}:</strong>
+                      <ul className="list-disc list-inside">
+                        {stick.map((part, partIndex) => (
+                          <li key={partIndex}>{part} units</li>
+                        ))}
+                      </ul>
+                      <span className="text-sm text-gray-700">
+                        (Remaining:{" "}
+                        {stickLength - stick.reduce((a, b) => a + b, 0)} units)
+                      </span>
+                    </div>
+                  </li>
+                ))}
             </ul>
           </div>
           {cutBreakdown.length > 0 && (
@@ -213,6 +245,11 @@ const StickLengthCalculator = () => {
             </button>
           )}
         </div>
+      </div>
+      <div className="text-center mt-10 bg-teal-500 hover:bg-teal-700 w-fit mx-auto text-white font-bold py-2 px-4 rounded">
+        <Link to="/blog/stick-calculator" className="">
+          Read more about the Stick Length Calculator in our blog
+        </Link>
       </div>
       <div className="max-w-4xl mx-auto px-4 mb-20 google_adscene">
         <div className="w-full h-[70px] rounded-lg flex items-center justify-center"></div>

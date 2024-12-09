@@ -17,14 +17,18 @@ import Error from "./Components/Error";
 import MoneyManagement from "./components/MoneyManagement/MoneyManagement.jsx";
 import Connect4Game from "./components/Connect4/Connect4Game.jsx";
 import TranscriptAnalyzer from "./Components/TranscriptAnalyzer/TranscriptAnalyzer2.jsx";
-import AluminumProfileLengthCalculator from "./Components/calculators/AluminumProfileLengthCalculator.jsx";
+import AluminumProfileLengthCalculator from "./components/calculators/StickLengthCalculator.jsx";
 import CalculateCg from "./components/CGCalculator/CalculateCg.jsx";
 import Home from "./components/Home.jsx";
 import CostCalculate from "./components/Routine/CostCalculate.jsx";
 import RetakeAssistant from "./Components/Routine/RetakeAssistant.jsx";
-import StickCalculator from "./blogs/stickcalculator/StickCalculator.jsx";
+import StickCalculator from "./blogs/stickcalculator/StickCalculatorBlog.jsx";
 import Blogs from "./blogs/Blogs.jsx";
-
+import Circuit from "./components/Circuits/Circuit.jsx";
+import DLD from "./components/Circuits/courses/DLD.jsx";
+import CircuitAnalysis from "./components/Circuits/courses/CircuitAnalysis.jsx";
+import Electronics1 from "./components/Circuits/courses/Electronics1.jsx";
+import Electronics2 from "./components/Circuits/courses/Electronics2.jsx";
 const trackingId = "";
 function App() {
   const getRandomHexColor = () => {
@@ -67,6 +71,11 @@ function App() {
             <Route path="/Connect4" element={<Connect4Game />} />
             <Route path="/cost-calculator" element={<CostCalculate />} />
             <Route path="/retake-assistant" element={<RetakeAssistant />} />
+            <Route path="/circuits" element={<Circuit />} />
+            <Route path="/courses/dld" element={<DLD />} />
+            <Route path="/courses/circuit-analysis" element={<CircuitAnalysis />} />
+            <Route path="/courses/electronics-1" element={<Electronics1 />} />
+            <Route path="/courses/electronics-2" element={<Electronics2 />} />
             <Route
               path="/stickCalculator"
               element={<AluminumProfileLengthCalculator />}

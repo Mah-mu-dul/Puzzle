@@ -335,18 +335,18 @@ const CalculateCg = () => {
           <span>
             {name && (
               <strong>
-                Hello <span className="text-gray-700 text-xl">{name}</span>
+                Hello <span className="text-green-700 text-xl">{name}</span>
               </strong>
             )}
             <br />
             <strong>
               CGPA:{" "}
-              <span className="text-gray-700 text-xl">{calculateCGPA()}</span>
+              <span className="text-green-700 text-xl">{calculateCGPA()}</span>
             </strong>{" "}
             <br />
             <strong>
               Total Earned Credit:{" "}
-              <span className="text-gray-700 text-xl">
+              <span className="text-green-700 text-xl">
                 {calculateTotalEarnedCredit()}
               </span>
             </strong>
@@ -362,7 +362,7 @@ const CalculateCg = () => {
           )}
           <span>
             <select
-              className="bg-white p-2 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+              className="bg-white p-2 rounded border border-gray-200 focus:outline-none focus:border-green-500"
               name=""
               onChange={(e) => handleUniversity(e)}
               id=""
@@ -383,7 +383,7 @@ const CalculateCg = () => {
           <div>
             <label htmlFor="previousCGPA">Previous CGPA:</label>
             <input
-              className="bg-white px-2 w-28 ml-2 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+              className="bg-white px-2 w-28 ml-2 rounded border border-gray-200 focus:outline-none focus:border-green-500"
               type="number"
               id="previousCGPA"
               min="0.00"
@@ -400,7 +400,7 @@ const CalculateCg = () => {
               Previous Earned Credit:
             </label>
             <input
-              className="bg-white px-2 w-28 ml-2 my-1 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+              className="bg-white px-2 w-28 ml-2 my-1 rounded border border-gray-200 focus:outline-none focus:border-green-500"
               type="number"
               placeholder={previousCGPA ? "Mandatory" : "optional"}
               id="previousEarnedCredit"
@@ -426,7 +426,7 @@ const CalculateCg = () => {
                   <tr key={index}>
                     <td>
                       <input
-                        className="bg-white px-2 lg:w-48 sm:w-36 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+                        className="bg-white px-2 lg:w-48 sm:w-36 rounded border border-gray-200 focus:outline-none focus:border-green-500"
                         type="text"
                         placeholder="Course Name"
                         name="courseName"
@@ -436,7 +436,7 @@ const CalculateCg = () => {
                     </td>
                     <td>
                       <input
-                        className="bg-white rounded mx-5 border border-gray-500 focus:outline-none focus:border-green-500 w-20 px-2"
+                        className="bg-white rounded mx-5 border border-gray-200 focus:outline-none focus:border-green-500 w-20 px-2"
                         type="number"
                         placeholder="Credits"
                         name="credits"
@@ -446,7 +446,7 @@ const CalculateCg = () => {
                     </td>
                     <td>
                       <select
-                        className="bg-white px-2 mr-2 lg:mr-5 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+                        className="bg-white px-2 mr-2 lg:mr-5 rounded border border-gray-200 focus:outline-none focus:border-green-500"
                         name="grade"
                         value={row.grade}
                         onChange={(e) => handleInputChange(e, index)}
@@ -460,7 +460,7 @@ const CalculateCg = () => {
                     </td>
                     <td>
                       <button
-                        className="bg-white px-2 py-1 ml-2 hover:bg-red-100 border border-gray-500 rounded text-gray-600"
+                        className="bg-white px-2 py-1 ml-2 hover:bg-red-100 border border-gray-200 rounded text-gray-600"
                         onClick={() => deleteRow(index)}
                       >
                         <FiTrash />
@@ -472,7 +472,7 @@ const CalculateCg = () => {
             </table>
 
             <button
-              className="bg-white px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-green-100 border border-gray-500 rounded"
+              className="bg-white px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-green-100 border border-gray-200 rounded"
               onClick={addRow}
             >
               Add Row
@@ -505,7 +505,7 @@ const CalculateCg = () => {
                   <tr key={index}>
                     <td>
                       <input
-                        className="bg-white px-2 md:w-48 w-32 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+                        className="bg-white px-2 md:w-48 w-32 rounded border border-gray-200 focus:outline-none focus:border-green-500"
                         type="text"
                         placeholder="Course Name"
                         name="courseName"
@@ -515,7 +515,7 @@ const CalculateCg = () => {
                     </td>
                     <td>
                       <input
-                        className="bg-white rounded mx-2 lg:mx-5 border border-gray-500 focus:outline-none focus:border-green-500 w-20 px-2"
+                        className="bg-white rounded mx-2 lg:mx-5 border border-gray-200 focus:outline-none focus:border-green-500 w-20 px-2"
                         type="number"
                         placeholder="Credits"
                         name="credits"
@@ -525,7 +525,7 @@ const CalculateCg = () => {
                     </td>
                     <td>
                       <select
-                        className="bg-white px-2 mr-2 lg:mr-5 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+                        className="bg-white px-2 mr-2 lg:mr-5 rounded border border-gray-200 focus:outline-none focus:border-green-500"
                         name="previousGrade"
                         value={row.previousGrade}
                         onChange={(e) => handleRetakeInputChange(e, index)}
@@ -539,7 +539,7 @@ const CalculateCg = () => {
                     </td>
                     <td>
                       <select
-                        className="bg-white px-2 mr-2 lg: mr-5 rounded border border-gray-500 focus:outline-none focus:border-green-500"
+                        className="bg-white px-2 mr-2 lg: mr-5 rounded border border-gray-200 focus:outline-none focus:border-green-500"
                         name="grade"
                         value={row.grade}
                         onChange={(e) => handleRetakeInputChange(e, index)}
@@ -553,7 +553,7 @@ const CalculateCg = () => {
                     </td>
                     <td>
                       <button
-                        className="bg-white px-2 py-1 ml-2 hover:bg-red-100 border border-gray-500 rounded text-gray-600"
+                        className="bg-white px-2 py-1 ml-2 hover:bg-red-100 border border-gray-200 rounded text-gray-600"
                         onClick={() => deleteRetakeRow(index)}
                       >
                         <FiTrash />
@@ -564,7 +564,7 @@ const CalculateCg = () => {
               </tbody>
             </table>
             <button
-              className="bg-white px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-green-100 border border-gray-500 rounded"
+              className="bg-white px-3 lg:mb-10 md:mb-10 py-1 mt-3 hover:bg-green-100 border border-gray-200 rounded"
               onClick={addRetakeRow}
             >
               Add Row
