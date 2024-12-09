@@ -42,6 +42,15 @@ const tools = [
     color: "bg-rose-50 hover:bg-rose-100",
     iconColor: "text-rose-600",
   },
+
+  {
+    title: "Circuits",
+    description: "Explore electronics and robotics projects",
+    icon: <Layout className="w-6 h-6" />,
+    path: "/circuits",
+    color: "bg-purple-50 hover:bg-purple-100",
+    iconColor: "text-purple-600",
+  },
   {
     title: "Money Manager",
     description: "Track your expenses",
@@ -92,14 +101,6 @@ const tools = [
     path: "/transcript-analyzer",
     color: "bg-indigo-50 hover:bg-indigo-100",
     iconColor: "text-indigo-600",
-  },
-  {
-    title: "Retake Assistant",
-    description: "Plan your retakes strategically",
-    icon: <Brain className="w-6 h-6" />,
-    path: "/retake-assistant",
-    color: "bg-purple-50 hover:bg-purple-100",
-    iconColor: "text-purple-600",
   },
 ];
 
