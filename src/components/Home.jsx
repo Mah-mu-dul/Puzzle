@@ -44,10 +44,10 @@ const tools = [
   },
 
   {
-    title: "Circuits",
+    title: "Course Project Circuits",
     description: "Explore electronics and robotics projects",
     icon: <Layout className="w-6 h-6" />,
-    path: "/circuits",
+    path: "/courses",
     color: "bg-purple-50 hover:bg-purple-100",
     iconColor: "text-purple-600",
   },

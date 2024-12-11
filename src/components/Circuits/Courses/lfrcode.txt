@@ -1,7 +1,11 @@
+// remove first line and last line  ---> /* */
+
+/*
+
 #define NUM_SENSORS 5
 
 // Sensor pins
-const int sensorPins[NUM_SENSORS] = {A0, A1, A2, A3, A4};
+const int sensorPins[NUM_SENSORS] = { A1, A2, A3, A4, A5};
 
 // Motor driver pins
 const int IN1 = 8;
@@ -252,4 +256,4 @@ void printDebugInfo() {
   Serial.println(lastLinePosition > 0 ? "Right" : "Left");
 }
 
-
+*/
