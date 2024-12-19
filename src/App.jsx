@@ -73,9 +73,13 @@ function App() {
             <Route path="/retake-assistant" element={<RetakeAssistant />} />
             <Route path="/courses" element={<Circuit />} />
             <Route path="/courses/dld" element={<DLD />} />
-            <Route path="/courses/circuit-analysis" element={<CircuitAnalysis />} />
+            <Route
+              path="/courses/circuit-analysis"
+              element={<CircuitAnalysis />}
+            />
             <Route path="/courses/electronics-1" element={<Electronics1 />} />
-            <Route path="/courses/electronics-2" element={<Electronics2 />} />app
+            <Route path="/courses/electronics-2" element={<Electronics2 />} />
+            app
             <Route
               path="/stickCalculator"
               element={<AluminumProfileLengthCalculator />}
@@ -84,13 +88,11 @@ function App() {
               path="/transcript-analyzer"
               element={<TranscriptAnalyzer />}
             />
-
             <Route path="/blogs" element={<Blogs />} />
             <Route
               path="/blog/stick-calculator"
               element={<StickCalculator />}
             />
-
             <Route path="/*" element={<Error />} />
           </Routes>
         </div>
