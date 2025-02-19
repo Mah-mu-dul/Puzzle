@@ -16,7 +16,7 @@ const Footer = () => {
           />
         </a>
         <a
-          href="https://www.facebook.com/mahhasanbd"
+          href="https://www.facebook.com/mahmudul.ig"
           rel="noreferrer"
           target="_blank"
         >
