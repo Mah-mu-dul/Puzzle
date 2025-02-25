@@ -15,6 +15,8 @@ import {
   Layout,
   GraduationCap,
 } from "lucide-react";
+import { FaHandsClapping } from "react-icons/fa6";  
+
 
 const tools = [
   {
@@ -58,6 +60,14 @@ const tools = [
     path: "/money-management",
     color: "bg-cyan-50 hover:bg-cyan-100",
     iconColor: "text-cyan-600",
+  },
+  {
+    title: "3-6-9 Clap Game",
+    description: "A fun number game where you clap for 3, 6, and 9!",
+    icon: <FaHandsClapping className="w-6 h-6" />,
+    path: "/clap369",
+    color: "bg-purple-50 hover:bg-purple-100",
+    iconColor: "text-purple-600",
   },
   {
     title: "Sudoku Solver",

@@ -7,7 +7,11 @@ import TicTacToe from "./Components/ticTacToe/TicTacToe";
 import MorseCodeConverter from "./Components/MorseCodeConverter";
 import Docs from "./Components/Docs";
 import { useEffect, useState } from "react";
+
 import Game2048 from "./components/Game2048/Game2048.jsx";
+import HomeClap369 from "./components/Clap369/Clap369Home.jsx";
+import Clap369 from "./components/Clap369/Clap369.jsx";
+
 import Routine from "./Components/Routine/Routine.jsx";
 import YoutubeApi1 from "./Components/Youtube/YoutubeApi1";
 import Test from "./Components/TestFiles/Test";
@@ -57,10 +61,13 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/solver/sudoku" element={<SudokuSolver />} />
+            <Route path="/Connect4" element={<Connect4Game />} />
+            <Route path="/game2048" element={<Game2048 />} />
+            <Route path="/clap369" element={<HomeClap369 />} />
+            <Route path="/clap369/start" element={<Clap369 />} />
             <Route path="/tictactoe" element={<TicTacToe />} />
             <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
             <Route path="/docs" element={<Docs />} />
-            <Route path="/game2048" element={<Game2048 />} />
             <Route path="/calculate-cg" element={<CalculateCg />} />
             <Route path="/routine" element={<Routine />} />
             <Route path="/youtube-api" element={<YoutubeApi1 />} />
@@ -68,7 +75,6 @@ function App() {
             <Route path="/qr" element={<QRCodeGenerator />} />
             <Route path="/about" element={<About />} />
             <Route path="/money-management" element={<MoneyManagement />} />
-            <Route path="/Connect4" element={<Connect4Game />} />
             <Route path="/cost-calculator" element={<CostCalculate />} />
             <Route path="/retake-assistant" element={<RetakeAssistant />} />
             <Route path="/courses" element={<Circuit />} />
