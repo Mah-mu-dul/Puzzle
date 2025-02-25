@@ -35,9 +35,9 @@ const CalculateCg = () => {
   const [retakeRows, setRetakeRows] = useState(initialRetakeRows);
 
   const [previousCGPA, setPreviousCGPA] = useState("");
+  const [previousEarnedCredit, setPreviousEarnedCredit] = useState("");
 
   const [uName, setUName] = useState("Independent University, Bangladesh");
-  const [previousEarnedCredit, setPreviousEarnedCredit] = useState("");
 
   const [normalCourses, setNormalCourses] = useState([]);
   const [retakeCourses, setRetakeCourses] = useState([]);
@@ -315,6 +315,37 @@ const CalculateCg = () => {
     return cgpa;
   };
 
+  useEffect(() => {
+    const storedName = localStorage.getItem('name');
+    if (storedName) {
+      setName(storedName);
+    }
+    const storedPreviousCGPA = localStorage.getItem('previousCGPA');
+    if (storedPreviousCGPA) {
+      setPreviousCGPA(storedPreviousCGPA);
+    }
+    const storedPreviousEarnedCredit = localStorage.getItem('previousEarnedCredit');
+    if (storedPreviousEarnedCredit) {
+      setPreviousEarnedCredit(storedPreviousEarnedCredit);
+    }
+    const storedNormalCourses = JSON.parse(localStorage.getItem('normalCourses'));
+    if (storedNormalCourses) {
+      setNormalCourses(storedNormalCourses);
+    }
+    const storedRetakeCourses = JSON.parse(localStorage.getItem('retakeCourses'));
+    if (storedRetakeCourses) {
+      setRetakeCourses(storedRetakeCourses);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('name', name);
+    localStorage.setItem('previousCGPA', previousCGPA);
+    localStorage.setItem('previousEarnedCredit', previousEarnedCredit);
+    localStorage.setItem('normalCourses', JSON.stringify(normalCourses));
+    localStorage.setItem('retakeCourses', JSON.stringify(retakeCourses));
+  }, [name, previousCGPA, previousEarnedCredit, normalCourses, retakeCourses]);
+
   return (
     <div className="mx-2 max-w-full bg-[#eee]">
       <p
@@ -324,10 +355,7 @@ const CalculateCg = () => {
         Disclaimer: This is not the official calculator. The CGPA calculated may
         vary from the official transcript. Use at your own risk.
       </p>
-      <p
-        className={`font-bold text-lg w-fit mx-auto mb-10 `}
-        id="label"
-      >
+      <p className={`font-bold text-lg w-fit mx-auto mb-10 `} id="label">
         {uName}
       </p>
       <div className="w-fit max-w-full overflow-hidden lg:mx-auto md:mx-3 relative">
@@ -505,7 +533,7 @@ const CalculateCg = () => {
                   <tr key={index}>
                     <td>
                       <input
-                        className="bg-white px-2 md:w-48 w-32 rounded border border-gray-200 focus:outline-none focus:border-green-500"
+                        className="bg-white px-2 md:w-48 w-[90px] rounded border border-gray-200 focus:outline-none focus:border-green-500"
                         type="text"
                         placeholder="Course Name"
                         name="courseName"
