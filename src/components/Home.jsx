@@ -15,8 +15,7 @@ import {
   Layout,
   GraduationCap,
 } from "lucide-react";
-import { FaHandsClapping } from "react-icons/fa6";  
-
+import { FaHandsClapping } from "react-icons/fa6";
 
 const tools = [
   {
@@ -36,6 +35,14 @@ const tools = [
     iconColor: "text-purple-600",
   },
 
+  {
+    title: "Automata Course Material",
+    description: "Explore course materials for Automata",
+    icon: <Brain className="w-6 h-6" />,
+    path: "/courses/automata",
+    color: "bg-blue-50 hover:bg-blue-100",
+    iconColor: "text-blue-600",
+  },
   {
     title: "Cost Calculator",
     description: "Calculate your credit cost",

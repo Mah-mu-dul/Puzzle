@@ -13,6 +13,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
     "@hookform/resolvers": "^3.9.0",
+    "@reactflow/core": "^11.11.4",
     "@rehooks/local-storage": "^2.4.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -40,6 +41,7 @@
     "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
     "react-to-pdf": "^1.0.1",
+    "reactflow": "^11.11.4",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0"
   },

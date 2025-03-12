@@ -33,6 +33,8 @@ import DLD from "./components/Circuits/courses/DLD.jsx";
 import CircuitAnalysis from "./components/Circuits/courses/CircuitAnalysis.jsx";
 import Electronics1 from "./components/Circuits/courses/Electronics1.jsx";
 import Electronics2 from "./components/Circuits/courses/Electronics2.jsx";
+import AutomataLanding from "./components/automata/AutomataLanding.jsx";
+import MinimizeDFA from "./components/automata/MinimizeDFA.jsx";
 const trackingId = "";
 function App() {
   const getRandomHexColor = () => {
@@ -63,9 +65,9 @@ function App() {
             <Route path="/solver/sudoku" element={<SudokuSolver />} />
             <Route path="/Connect4" element={<Connect4Game />} />
             <Route path="/game2048" element={<Game2048 />} />
-            <Route path="/clap369" element={<HomeClap369 />} />
             <Route path="/clap369/start" element={<Clap369 />} />
             <Route path="/tictactoe" element={<TicTacToe />} />
+            <Route path="/clap369" element={<HomeClap369 />} />
             <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
             <Route path="/docs" element={<Docs />} />
             <Route path="/calculate-cg" element={<CalculateCg />} />
@@ -79,6 +81,11 @@ function App() {
             <Route path="/retake-assistant" element={<RetakeAssistant />} />
             <Route path="/courses" element={<Circuit />} />
             <Route path="/courses/dld" element={<DLD />} />
+            <Route path="/courses/automata" element={<AutomataLanding />} />
+            <Route
+              path="/courses/automata/minimizeDFA"
+              element={<MinimizeDFA />}
+            />
             <Route
               path="/courses/circuit-analysis"
               element={<CircuitAnalysis />}
