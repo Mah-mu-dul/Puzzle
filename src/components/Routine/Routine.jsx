@@ -4,7 +4,7 @@ import "jspdf-autotable";
 import CostCalculate from "./CostCalculate";
 import html2canvas from "html2canvas";
 import AddToCalendar from "./AddToCalender";
-import RetakeAssistant from "./RetakeAssistant";
+import RetakeAssistant from "../TranscriptAnalyzer/RetakeAssistant";
 import { Link } from "react-router-dom";
 import copyPastImg from "../../Images/how to past.png";
 
@@ -262,7 +262,7 @@ const Routine = () => {
         </button>
         {/* <AddToCalendar /> */}
       </div>
-        <br />
+      <br />
       <div className="flex flex-col justify-center place-items-center">
         <div className="lg:flex md:flex sm:flex flex-wrap justify-center items-center w-fit gap-3  ">
           <input

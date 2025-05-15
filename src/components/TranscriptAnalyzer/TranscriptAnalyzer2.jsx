@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as pdfjsLib from "pdfjs-dist/webpack";
+import { formatTranscriptData } from "./transcriptDataFormatter";
 
 const TranscriptAnalyzer = ({
   setNormalCourses,
@@ -48,117 +49,73 @@ const TranscriptAnalyzer = ({
             pageText += currentLine.trim() + "\n";
           }
 
-          const headerText =
-            "Course Course Title Type Grade Course Credit Credit Earned Credit for GPA Grade Point";
           fullText = fullText.concat(
-            pageText
-              .split(headerText)
-              .join("")
-              .split("\n")
-              .filter((line) => line.trim() !== "")
+            pageText.split("\n").filter((line) => line.trim() !== "")
           );
         }
 
-        // Extract and set name
-        const name = fullText[2].split("   ")[1];
-        if (!name) throw new Error("Unable to extract name");
-        setName(name);
+        // Process the extracted text using formatTranscriptData
+        const formattedData = formatTranscriptData(fullText);
 
-        // Extract and set previous CGPA
-        const previousCGPA = fullText[fullText.length - 1].split("   ").pop();
-        if (isNaN(parseFloat(previousCGPA))) throw new Error("Invalid CGPA");
-        setPreviousCGPA(previousCGPA);
+        // Set student name
+        setName(formattedData.studentName);
 
-        // Extract and set total earned credit
-        const totalEarnedCredit = fullText[fullText.length - 3]
-          .split("   ")
-          .pop();
-        const parsedCredit = parseInt(totalEarnedCredit, 10);
-        if (isNaN(parsedCredit)) throw new Error("Invalid total earned credit");
-        setPreviousEarnedCredit(parsedCredit);
+        // Set CGPA
+        setPreviousCGPA(formattedData.academicRecord.cumulativeGPA.toString());
 
-        const courseInfoRaw = fullText.slice(6, -4);
-        let nestedCourseInfo = [];
-        let currentSemester = [];
-
-        for (const line of courseInfoRaw) {
-          if (line.includes("GPA :")) {
-            if (currentSemester.length > 0) {
-              currentSemester.push(
-                line.split("   ").filter((item) => item.trim() !== "")
-              );
-              nestedCourseInfo.push(currentSemester);
-            }
-            currentSemester = [];
-          } else if (!line.startsWith("Course")) {
-            currentSemester.push(
-              line.split("   ").filter((item) => item.trim() !== "")
-            );
-          }
-        }
-
-        if (currentSemester.length > 0) {
-          nestedCourseInfo.push(currentSemester);
-        }
-
-        for (let i = 0; i < nestedCourseInfo.length; i++) {
-          for (let j = 0; j < nestedCourseInfo[i].length - 1; j++) {
-            if (
-              nestedCourseInfo[i][j].length === 2 &&
-              nestedCourseInfo[i][j + 1]
-            ) {
-              nestedCourseInfo[i][j] = [
-                nestedCourseInfo[i][j][0],
-                nestedCourseInfo[i][j][1] + " " + nestedCourseInfo[i][j + 1][0],
-                ...nestedCourseInfo[i][j + 1].slice(1),
-              ];
-              nestedCourseInfo[i].splice(j + 1, 1);
-              j--;
-            }
-          }
-        }
-
-        const lastSemester = nestedCourseInfo[nestedCourseInfo.length - 1];
-        const retakeCourses = lastSemester.filter(
-          (course) => course.length === 8
+        // Set total earned credits
+        setPreviousEarnedCredit(
+          formattedData.academicRecord.totalCreditsEarned
         );
-        const nonRetakeCourses = lastSemester.filter(
-          (course) =>
-            course.length === 7 && course[3] !== "W" && course[2] !== "W"
-        );
-        console.log(nonRetakeCourses);
 
-        // Process retaken courses
-        const processedRetakeCourses = retakeCourses.map((retakeCourse) => {
-          const courseCode = retakeCourse[0];
-          let lastGrade = retakeCourse[3]; // Initialize with the current grade
-
-          // Search all semesters for the same course
-          for (let i = nestedCourseInfo.length - 1; i >= 0; i--) {
-            const semester = nestedCourseInfo[i];
-            for (let j = semester.length - 1; j >= 0; j--) {
-              const course = semester[j];
-              if (course[0] === courseCode) {
-                lastGrade = course[3];
-                break;
-              }
-            }
-          }
-
-          // Return the retake course with the last grade
-          return [
-            ...retakeCourse.slice(0, 3),
-            lastGrade,
-            ...retakeCourse.slice(4),
+        // Get the last semester's courses
+        const lastSemester =
+          formattedData.academicRecord.semesters[
+            formattedData.academicRecord.semesters.length - 1
           ];
-        });
 
-        setNormalCourses(nonRetakeCourses);
-        setRetakeCourses(processedRetakeCourses);
+        // Separate retake and normal courses
+        const retakeCourses = lastSemester.courses
+          .filter((course) => course.courseType === "R")
+          .map((course) => [
+            course.courseCode,
+            course.courseTitle,
+            course.courseType,
+            course.grade,
+            course.creditHours.toString(),
+            course.earnedCredits.toString(),
+            course.gpaCredits.toString(),
+            course.gradePoints.toString(),
+          ]);
+
+        const normalCourses = lastSemester.courses
+          .filter(
+            (course) =>
+              course.courseType !== "R" &&
+              course.courseType !== "T" &&
+              course.grade !== "W"
+          )
+          .map((course) => [
+            course.courseCode,
+            course.courseTitle,
+            course.grade,
+            course.creditHours.toString(),
+            course.earnedCredits.toString(),
+            course.gpaCredits.toString(),
+            course.gradePoints.toString(),
+          ]);
+
+        console.log("Last Semester:", lastSemester.semesterName);
+        console.log("Normal Courses:", normalCourses);
+        console.log("Retake Courses:", retakeCourses);
+
+        setNormalCourses(normalCourses);
+        setRetakeCourses(retakeCourses);
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
+        console.error("Error processing transcript:", err);
       }
     };
     reader.readAsArrayBuffer(file);
@@ -166,8 +123,6 @@ const TranscriptAnalyzer = ({
 
   return (
     <div className="bg-indigo-50 shadow-xl hover:bg-indigo-100 p-8 rounded-xl">
-      
-
       <h3 className="text-lg font-semibold mb-2">Upload Your Transcript</h3>
       <input
         type="file"

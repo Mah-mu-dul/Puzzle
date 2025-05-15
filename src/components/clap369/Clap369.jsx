@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaCrown } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaHandsClapping } from "react-icons/fa6";
 
 const getClapCount = (num) => {
@@ -41,13 +41,18 @@ const Clap369 = () => {
   const [popupInfo, setPopupInfo] = useState(null); // State for popup information
   const [playerWins, setPlayerWins] = useState({}); // Store player wins
   const [gameEnded, setGameEnded] = useState(false); // State to track if the game has ended
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedPlayers =
       JSON.parse(localStorage.getItem("currentPlayers")) || [];
+    if (storedPlayers.length < 2) {
+      navigate("/clap369");
+      return;
+    }
     setAlivePlayers(storedPlayers);
     setOptions(getOptions(currentNum));
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     // Update options whenever currentNum changes
@@ -74,9 +79,8 @@ const Clap369 = () => {
           <p>
             Eliminated for choosing{" "}
             <strong style={{ color: "red" }}>{choice}</strong>. The correct
-            answer was a <strong style={{ color: "red" }}>clap</strong>.
-            Current number was{" "}
-            <strong style={{ color: "red" }}>{currentNum}</strong>.
+            answer was a <strong style={{ color: "red" }}>clap</strong>. Current
+            number was <strong style={{ color: "red" }}>{currentNum}</strong>.
           </p>
         );
       } else {
@@ -130,6 +134,11 @@ const Clap369 = () => {
       }));
     }
   }, [alivePlayers, gameEnded]); // Run this effect when alivePlayers changes
+
+  // If no players are loaded, show loading or redirect
+  if (alivePlayers.length === 0) {
+    return null; // Component will unmount and redirect via useEffect
+  }
 
   if (alivePlayers.length === 1 && gameEnded) {
     const winner = alivePlayers[0];

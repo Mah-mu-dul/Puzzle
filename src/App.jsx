@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import Footer from "./Components/shared/Footer";
 import SudokuSolver from "./Components/sudoku/SudokuSolver";
@@ -7,6 +7,7 @@ import TicTacToe from "./Components/ticTacToe/TicTacToe";
 import MorseCodeConverter from "./Components/MorseCodeConverter";
 import Docs from "./Components/Docs";
 import { useEffect, useState } from "react";
+import Layout from "./components/shared/Layout";
 
 import Game2048 from "./components/Game2048/Game2048.jsx";
 import HomeClap369 from "./components/Clap369/Clap369Home.jsx";
@@ -25,7 +26,6 @@ import AluminumProfileLengthCalculator from "./components/calculators/StickLengt
 import CalculateCg from "./components/CGCalculator/CalculateCg.jsx";
 import Home from "./components/Home.jsx";
 import CostCalculate from "./components/Routine/CostCalculate.jsx";
-import RetakeAssistant from "./Components/Routine/RetakeAssistant.jsx";
 import StickCalculator from "./blogs/stickcalculator/StickCalculatorBlog.jsx";
 import Blogs from "./blogs/Blogs.jsx";
 import Circuit from "./components/Circuits/Circuit.jsx";
@@ -35,7 +35,31 @@ import Electronics1 from "./components/Circuits/courses/Electronics1.jsx";
 import Electronics2 from "./components/Circuits/courses/Electronics2.jsx";
 import AutomataLanding from "./components/automata/AutomataLanding.jsx";
 import MinimizeDFA from "./components/automata/MinimizeDFA.jsx";
+import WordCounter from "./components/writer helper/WordCounter.jsx";
+import StudentsTools from "./components/StudentsTools.jsx";
+import Games from "./components/category-pages/Games.jsx";
+import Tools from "./components/category-pages/Tools.jsx";
+import Planners from "./components/category-pages/Planners.jsx";
+import Finance from "./components/category-pages/Finance.jsx";
+import CSCourses from "./components/category-pages/CSCourses.jsx";
+import AcademicAnalysis from "./components/category-pages/AcademicAnalysis.jsx";
+import Normalization from "./components/DBMS/Normalization.jsx";
+import ChatLanding from "./components/chat/ChatLanding.jsx";
+import TranscriptAnalyzer3 from "./components/TranscriptAnalyzer/TranscriptAnalyzer3.jsx";
+import RetakeAssistant from "./Components/TranscriptAnalyzer/RetakeAssistant.jsx";
+import BuyMeACoffee from "./components/BuyMeCoffee/BuyMeACoffee.jsx";
+// import TranscriptAnalyzer3 from "./components/TranscriptAnalyzer/TranscriptAnalyzer3.jsx";
 const trackingId = "";
+
+// Add this component for protected route
+const ProtectedClap369 = () => {
+  const players = JSON.parse(localStorage.getItem("currentPlayers")) || [];
+  if (players.length < 2) {
+    return <Navigate to="/clap369" replace />;
+  }
+  return <Clap369 />;
+};
+
 function App() {
   const getRandomHexColor = () => {
     return "#eee";
@@ -48,72 +72,61 @@ function App() {
       setBackgroundColor(getRandomHexColor());
     };
 
-    const interval = setInterval(changeBackgroundColor, 7000); // Change color every 3 seconds
-
+    const interval = setInterval(changeBackgroundColor, 7000);
     return () => clearInterval(interval);
   }, []);
-  return (
-    <div className="bg-[#FAFBFC] max-w-[1800px] mx-auto overflow-hidden">
-      <div
-        className={` flex flex-col justify-between text-black  w-full pb-10 min-h-screen transition-background duration-1000`}
-        style={{ backgroundColor, transition: "background 2s" }}
-      >
-        <Navbar />
-        <div className="h-full ">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/solver/sudoku" element={<SudokuSolver />} />
-            <Route path="/Connect4" element={<Connect4Game />} />
-            <Route path="/game2048" element={<Game2048 />} />
-            <Route path="/clap369/start" element={<Clap369 />} />
-            <Route path="/tictactoe" element={<TicTacToe />} />
-            <Route path="/clap369" element={<HomeClap369 />} />
-            <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
-            <Route path="/docs" element={<Docs />} />
-            <Route path="/calculate-cg" element={<CalculateCg />} />
-            <Route path="/routine" element={<Routine />} />
-            <Route path="/youtube-api" element={<YoutubeApi1 />} />
-            <Route path="/test" element={<Test />} />
-            <Route path="/qr" element={<QRCodeGenerator />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/money-management" element={<MoneyManagement />} />
-            <Route path="/cost-calculator" element={<CostCalculate />} />
-            <Route path="/retake-assistant" element={<RetakeAssistant />} />
-            <Route path="/courses" element={<Circuit />} />
-            <Route path="/courses/dld" element={<DLD />} />
-            <Route path="/courses/automata" element={<AutomataLanding />} />
-            <Route
-              path="/courses/automata/minimizeDFA"
-              element={<MinimizeDFA />}
-            />
-            <Route
-              path="/courses/circuit-analysis"
-              element={<CircuitAnalysis />}
-            />
-            <Route path="/courses/electronics-1" element={<Electronics1 />} />
-            <Route path="/courses/electronics-2" element={<Electronics2 />} />
-            app
-            <Route
-              path="/stickCalculator"
-              element={<AluminumProfileLengthCalculator />}
-            />
-            <Route
-              path="/transcript-analyzer"
-              element={<TranscriptAnalyzer />}
-            />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route
-              path="/blog/stick-calculator"
-              element={<StickCalculator />}
-            />
-            <Route path="/*" element={<Error />} />
-          </Routes>
-        </div>
 
-        {/* <SudokuSolver /> */}
-        <Footer />
-      </div>
-    </div>
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/chat" element={<ChatLanding />} />
+
+        <Route path="/student-tools" element={<StudentsTools />} />
+        <Route path="/games" element={<Games />} />
+        <Route path="/tools" element={<Tools />} />
+        <Route path="/planners" element={<Planners />} />
+        <Route path="/finance" element={<Finance />} />
+        <Route path="/cs-courses" element={<CSCourses />} />
+        <Route path="/academic-analysis" element={<AcademicAnalysis />} />
+        <Route path="/solver/sudoku" element={<SudokuSolver />} />
+        <Route path="/Connect4" element={<Connect4Game />} />
+        <Route path="/game2048" element={<Game2048 />} />
+        <Route path="/clap369" element={<HomeClap369 />} />
+        <Route path="/clap369/start" element={<ProtectedClap369 />} />
+        <Route path="/tictactoe" element={<TicTacToe />} />
+        <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
+        <Route path="/docs" element={<Docs />} />
+        <Route path="/calculate-cg" element={<CalculateCg />} />
+        <Route path="/routine" element={<Routine />} />
+        <Route path="/youtube-api" element={<YoutubeApi1 />} />
+        <Route path="/test" element={<Test />} />
+        <Route path="/qr" element={<QRCodeGenerator />} />
+        <Route path="/word-count" element={<WordCounter />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/money-management" element={<MoneyManagement />} />
+        <Route path="/cost-calculator" element={<CostCalculate />} />
+        <Route path="/retake-assistant" element={<RetakeAssistant />} />
+        <Route path="/courses" element={<Circuit />} />
+        <Route path="/courses/dld" element={<DLD />} />
+        <Route path="/courses/automata" element={<AutomataLanding />} />
+        {/* <Route path="/courses/dbms-normalization" element={<Normalization />} /> */}
+        <Route path="/courses/automata/minimizeDFA" element={<MinimizeDFA />} />
+        <Route path="/courses/circuit-analysis" element={<CircuitAnalysis />} />
+        <Route path="/courses/electronics-1" element={<Electronics1 />} />
+        <Route path="/courses/electronics-2" element={<Electronics2 />} />
+        <Route
+          path="/stickCalculator"
+          element={<AluminumProfileLengthCalculator />}
+        />
+        <Route path="/transcript-analyzer" element={<TranscriptAnalyzer3 />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/buy-me-a-coffee" element={<BuyMeACoffee />} />
+
+        <Route path="/blog/stick-calculator" element={<StickCalculator />} />
+        <Route path="/*" element={<Error />} />
+      </Routes>
+    </Layout>
   );
 }
 

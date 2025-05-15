@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { to: "/calculate-cg", label: "Calculate CG" },
-    { to: "/routine", label: "Routine" },
-    { to: "/stickCalculator", label: "Stick Calculator" },
-    { to: "/money-management", label: "Money Management" },
-    { to: "/tictactoe", label: "Tic Tac Toe" },
-    { to: "/connect4", label: "Connect 4" },
-    { to: "/solver/sudoku", label: "Sudoku" },
-    { to: "/qr", label: "QR" },
+    { to: "/student-tools", label: "Student Tools" },
+    { to: "/games", label: "Games" },
+    { to: "/tools", label: "Tools" },
+    { to: "/planners", label: "Planners" },
+    { to: "/finance", label: "Finance" },
+    { to: "/courses", label: "Courses" },
     { to: "/blogs", label: "Blogs" },
   ];
 
@@ -28,7 +27,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="bg-white shadow-lg mb-10">
+    <nav className="bg-white shadow-lg ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -40,6 +39,9 @@ const Navbar = () => {
                 Easy Puzzle
               </h1>
             </NavLink>
+          </div>
+          <div className="hidden md:block flex-1 max-w-md mx-4">
+            <SearchBar />
           </div>
           <div className="hidden lg:block">
             <div className="ml-10 flex items-baseline space-x-4">
@@ -66,6 +68,9 @@ const Navbar = () => {
         }`}
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="md:hidden">
+            <SearchBar />
+          </div>
           {navItems.map((item) => (
             <NavLink
               key={item.to}

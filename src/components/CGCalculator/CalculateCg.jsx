@@ -316,34 +316,40 @@ const CalculateCg = () => {
   };
 
   useEffect(() => {
-    const storedName = localStorage.getItem('name');
+    const storedName = localStorage.getItem("name");
     if (storedName) {
       setName(storedName);
     }
-    const storedPreviousCGPA = localStorage.getItem('previousCGPA');
+    const storedPreviousCGPA = localStorage.getItem("previousCGPA");
     if (storedPreviousCGPA) {
       setPreviousCGPA(storedPreviousCGPA);
     }
-    const storedPreviousEarnedCredit = localStorage.getItem('previousEarnedCredit');
+    const storedPreviousEarnedCredit = localStorage.getItem(
+      "previousEarnedCredit"
+    );
     if (storedPreviousEarnedCredit) {
       setPreviousEarnedCredit(storedPreviousEarnedCredit);
     }
-    const storedNormalCourses = JSON.parse(localStorage.getItem('normalCourses'));
+    const storedNormalCourses = JSON.parse(
+      localStorage.getItem("normalCourses")
+    );
     if (storedNormalCourses) {
       setNormalCourses(storedNormalCourses);
     }
-    const storedRetakeCourses = JSON.parse(localStorage.getItem('retakeCourses'));
+    const storedRetakeCourses = JSON.parse(
+      localStorage.getItem("retakeCourses")
+    );
     if (storedRetakeCourses) {
       setRetakeCourses(storedRetakeCourses);
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('name', name);
-    localStorage.setItem('previousCGPA', previousCGPA);
-    localStorage.setItem('previousEarnedCredit', previousEarnedCredit);
-    localStorage.setItem('normalCourses', JSON.stringify(normalCourses));
-    localStorage.setItem('retakeCourses', JSON.stringify(retakeCourses));
+    localStorage.setItem("name", name);
+    localStorage.setItem("previousCGPA", previousCGPA);
+    localStorage.setItem("previousEarnedCredit", previousEarnedCredit);
+    localStorage.setItem("normalCourses", JSON.stringify(normalCourses));
+    localStorage.setItem("retakeCourses", JSON.stringify(retakeCourses));
   }, [name, previousCGPA, previousEarnedCredit, normalCourses, retakeCourses]);
 
   return (

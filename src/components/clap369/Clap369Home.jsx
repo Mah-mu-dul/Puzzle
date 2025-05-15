@@ -42,8 +42,10 @@ const HomeClap369 = () => {
   };
 
   const startGame = () => {
-    localStorage.setItem("currentPlayers", JSON.stringify(players));
-    navigate("/clap369/start");
+    if (players.length >= 2) {
+      localStorage.setItem("currentPlayers", JSON.stringify(players));
+      navigate("/clap369/start");
+    }
   };
 
   return (
@@ -105,9 +107,14 @@ const HomeClap369 = () => {
           </ul>
           <button
             onClick={startGame}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg px-6 py-3 font-medium shadow-md transition-colors duration-200"
+            disabled={players.length < 2}
+            className={`${
+              players.length >= 2
+                ? "bg-emerald-500 hover:bg-emerald-600"
+                : "bg-gray-400 cursor-not-allowed"
+            } text-white rounded-lg px-6 py-3 font-medium shadow-md transition-colors duration-200`}
           >
-            Start Game
+            {players.length < 2 ? "Need at least 2 players" : "Start Game"}
           </button>
         </div>
       </div>

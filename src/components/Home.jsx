@@ -2,126 +2,99 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Calculator,
-  Calendar,
-  GamepadIcon,
-  Grid3X3,
-  Youtube,
-  QrCode,
-  Brain,
-  School,
-  MessageSquare,
-  Wallet,
-  Layout,
   GraduationCap,
+  GamepadIcon,
+  Wrench,
+  BookOpen,
+  Code,
+  Calculator,
+  Binary,
+  Cpu,
+  CircuitBoard,
+  Lightbulb,
+  Newspaper,
+  MessageSquare,
+  Calendar,
+  Wallet,
+  Sigma,
 } from "lucide-react";
-import { FaHandsClapping } from "react-icons/fa6";
 
-const tools = [
+const categories = [
   {
-    title: "CGPA Calculator",
-    description: "Calculate your academic performance",
-    icon: <Calculator className="w-6 h-6" />,
-    path: "/calculate-cg",
+    title: "Student Tools",
+    description: "Essential tools for academic success",
+    icon: <GraduationCap className="w-8 h-8" />,
+    path: "/student-tools",
+    color: "bg-blue-50 hover:bg-blue-100",
+    iconColor: "text-blue-600",
+  },
+  {
+    title: "Games & Fun",
+    description: "Educational games and entertainment",
+    icon: <GamepadIcon className="w-8 h-8" />,
+    path: "/games",
+    color: "bg-purple-50 hover:bg-purple-100",
+    iconColor: "text-purple-600",
+  },
+  {
+    title: "Converters & Calculators",
+    description: "Useful conversion and calculation tools",
+    icon: <Calculator className="w-8 h-8" />,
+    path: "/tools",
     color: "bg-green-50 hover:bg-green-100",
     iconColor: "text-green-600",
   },
   {
-    title: "Class Routine",
-    description: "Organize your class schedule",
-    icon: <Calendar className="w-6 h-6" />,
-    path: "/routine",
-    color: "bg-purple-50 hover:bg-purple-100",
-    iconColor: "text-purple-600",
-  },
-
-  {
-    title: "Automata Course Material",
-    description: "Explore course materials for Automata",
-    icon: <Brain className="w-6 h-6" />,
-    path: "/courses/automata",
-    color: "bg-blue-50 hover:bg-blue-100",
-    iconColor: "text-blue-600",
+    title: "Planners & Organizers",
+    description: "Schedule and organize your academic life",
+    icon: <Calendar className="w-8 h-8" />,
+    path: "/planners",
+    color: "bg-amber-50 hover:bg-amber-100",
+    iconColor: "text-amber-600",
   },
   {
-    title: "Cost Calculator",
-    description: "Calculate your credit cost",
-    icon: <Calculator className="w-6 h-6" />,
-    path: "/cost-calculator",
-    color: "bg-rose-50 hover:bg-rose-100",
-    iconColor: "text-rose-600",
+    title: "Financial Tools",
+    description: "Manage your finances and expenses",
+    icon: <Wallet className="w-8 h-8" />,
+    path: "/finance",
+    color: "bg-emerald-50 hover:bg-emerald-100",
+    iconColor: "text-emerald-600",
   },
-
   {
-    title: "Course Project Circuits",
-    description: "Explore electronics and robotics projects",
-    icon: <Layout className="w-6 h-6" />,
+    title: "Engineering Courses",
+    description: "Electronics and circuit design resources",
+    icon: <CircuitBoard className="w-8 h-8" />,
     path: "/courses",
-    color: "bg-purple-50 hover:bg-purple-100",
-    iconColor: "text-purple-600",
+    color: "bg-red-50 hover:bg-red-100",
+    iconColor: "text-red-600",
   },
   {
-    title: "Money Manager",
-    description: "Track your expenses",
-    icon: <Wallet className="w-6 h-6" />,
-    path: "/money-management",
+    title: "Computer Science",
+    description: "Theoretical computer science concepts",
+    icon: <Cpu className="w-8 h-8" />,
+    path: "/cs-courses",
+    color: "bg-indigo-50 hover:bg-indigo-100",
+    iconColor: "text-indigo-600",
+  },
+  {
+    title: "Academic Analysis",
+    description: "Analyze your academic performance",
+    icon: <Sigma className="w-8 h-8" />,
+    path: "/academic-analysis",
     color: "bg-cyan-50 hover:bg-cyan-100",
     iconColor: "text-cyan-600",
   },
   {
-    title: "3-6-9 Clap Game",
-    description: "A fun number game where you clap for 3, 6, and 9!",
-    icon: <FaHandsClapping className="w-6 h-6" />,
-    path: "/clap369",
-    color: "bg-purple-50 hover:bg-purple-100",
-    iconColor: "text-purple-600",
-  },
-  {
-    title: "Sudoku Solver",
-    description: "Solve any Sudoku puzzle instantly",
-    icon: <Grid3X3 className="w-6 h-6" />,
-    path: "/solver/sudoku",
-    color: "bg-blue-50 hover:bg-blue-100",
-    iconColor: "text-blue-600",
-  },
-
-  {
-    title: "QR Generator",
-    description: "Create QR codes easily",
-    icon: <QrCode className="w-6 h-6" />,
-    path: "/qr",
-    color: "bg-amber-50 hover:bg-amber-100",
-    iconColor: "text-amber-600",
-  },
-
-  {
-    title: "Morse Code",
-    description: "Convert text to morse code",
-    icon: <MessageSquare className="w-6 h-6" />,
-    path: "/convert/morsecode",
-    color: "bg-red-50 hover:bg-red-100",
-    iconColor: "text-red-600",
-  },
-
-  // {
-  //   title: "Games 2048",
-  //   description: "2048, TicTacToe, Connect4",
-  //   icon: <GamepadIcon className="w-6 h-6" />,
-  //   path: "/game2048",
-  //   color: "bg-teal-50 hover:bg-teal-100 ",
-  //   iconColor: "text-teal-600",
-  // },
-  {
-    title: "Transcript Analyzer",
-    description: "Analyze academic transcripts",
-    icon: <GraduationCap className="w-6 h-6" />,
-    path: "/transcript-analyzer",
-    color: "bg-indigo-50 hover:bg-indigo-100",
-    iconColor: "text-indigo-600",
+    title: "Blogs & Tutorials",
+    description: "Educational articles and guides",
+    icon: <Newspaper className="w-8 h-8" />,
+    path: "/blogs",
+    color: "bg-rose-50 hover:bg-rose-100",
+    iconColor: "text-rose-600",
   },
 ];
 
-const Home = () => {
+function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
@@ -132,36 +105,38 @@ const Home = () => {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto text-center"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">
-            Student's Essential Tools
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            Academic Tools & Resources
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            All-in-one platform for academic planning, calculations, and
-            entertainment
+            Your comprehensive platform for academic success, featuring tools,
+            calculators, course materials, and more
           </p>
         </motion.div>
       </section>
 
-      {/* Tools Grid */}
+      {/* Categories Grid */}
       <section className="px-4 pb-20">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tools.map((tool, index) => (
+            {categories.map((category, index) => (
               <motion.div
-                key={tool.path}
+                key={category.path}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Link to={tool.path}>
+                <Link to={category.path}>
                   <div
-                    className={`p-6 rounded-xl ${tool.color} transition-all duration-300 transform hover:scale-105`}
+                    className={`p-6 rounded-xl ${category.color} transition-all duration-300 transform hover:scale-105 shadow-sm`}
                   >
-                    <div className={`${tool.iconColor} mb-4`}>{tool.icon}</div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {tool.title}
+                    <div className={`${category.iconColor} mb-4`}>
+                      {category.icon}
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {category.title}
                     </h3>
-                    <p className="text-gray-600">{tool.description}</p>
+                    <p className="text-gray-600">{category.description}</p>
                   </div>
                 </Link>
               </motion.div>
@@ -170,12 +145,49 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Bottom Ad Space */}
-      <div className="max-w-4xl mx-auto px-4 mb-20">
-        <div className="w-full h-[100px]  rounded-lg flex items-center justify-center"></div>
-      </div>
+      {/* Features Section */}
+      <section className="px-4 pb-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            Why Choose Our Platform?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-6">
+              <div className="text-blue-600 mb-4">
+                <Wrench className="w-8 h-8 mx-auto" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">All-in-One Tools</h3>
+              <p className="text-gray-600">
+                Everything you need for academic success in one place
+              </p>
+            </div>
+            <div className="p-6">
+              <div className="text-green-600 mb-4">
+                <Code className="w-8 h-8 mx-auto" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">
+                Interactive Learning
+              </h3>
+              <p className="text-gray-600">
+                Engage with interactive tools and calculators
+              </p>
+            </div>
+            <div className="p-6">
+              <div className="text-purple-600 mb-4">
+                <MessageSquare className="w-8 h-8 mx-auto" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">
+                Comprehensive Resources
+              </h3>
+              <p className="text-gray-600">
+                Access course materials and educational content
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
-};
+}
 
 export default Home;
