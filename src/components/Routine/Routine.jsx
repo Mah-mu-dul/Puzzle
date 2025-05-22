@@ -2,12 +2,10 @@ import { useRef, useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import CostCalculate from "./CostCalculate";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 import AddToCalendar from "./AddToCalender";
-import RetakeAssistant from "../TranscriptAnalyzer/RetakeAssistant";
 import { Link } from "react-router-dom";
 import copyPastImg from "../../Images/how to past.png";
-
 import { motion } from "framer-motion";
 import {
   Calculator,
@@ -22,6 +20,7 @@ import {
   Wallet,
   Layout,
   GraduationCap,
+  Download,
 } from "lucide-react";
 
 // Day slot options
@@ -68,6 +67,7 @@ const Routine = () => {
   const [pastedText, setPastedText] = useState("");
   const [courses, setCourses] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   console.log(routine);
   const [times, setTimes] = useState([
     "08:00-09:30",
@@ -139,14 +139,39 @@ const Routine = () => {
     doc.save("Easy-Rutine.pdf");
   };
 
-  const handledownloadPNG = () => {
-    html2canvas(routineRef.current).then((canvas) => {
-      const dataURL = canvas.toDataURL("image/png");
-      const a = document.createElement("a");
-      a.href = dataURL;
-      a.download = "Easy-Rutine.png";
-      a.click();
-    });
+  const downloadRoutine = async () => {
+    if (!routineRef.current || downloading) return;
+
+    try {
+      setDownloading(true);
+
+      const node = routineRef.current;
+      const canvas = await html2canvas(node, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.querySelector("[data-routine]");
+          if (clonedElement) {
+            clonedElement.style.backgroundColor = "#ffffff";
+          }
+        },
+      });
+
+      const dataURL = canvas.toDataURL("image/png", 1.0);
+      const link = document.createElement("a");
+      link.href = dataURL;
+      link.download = "Easy-Routine.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading routine:", error);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleAddCustomTime = () => {
@@ -338,24 +363,63 @@ const Routine = () => {
           </div>
         )}
       </div>
-      <div className="sm:overflow-scroll md:overflow-scroll lg:overflow-hidden w-full mx-auto flex justify-center  px-3">
+      <div className="sm:overflow-scroll md:overflow-scroll lg:overflow-hidden w-full mx-auto flex justify-center px-3">
         <div className="w-full">
           <div
-            className=" p-3 w-fit mx-auto flex flex-col justify-center items-center"
             ref={routineRef}
+            style={{
+              padding: "12px",
+              width: "fit-content",
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+            }}
           >
-            <h1 className="text-center text-2xl">
+            <h1
+              style={{
+                textAlign: "center",
+                fontSize: "24px",
+                color: "#1f2937",
+                marginBottom: "20px",
+              }}
+            >
               Elevate Your Routine Effortlessly
             </h1>
-            <table className=" rounded-md mt-5 mx-auto   w-fit" ref={tableRef}>
+            <table
+              ref={tableRef}
+              style={{
+                borderCollapse: "collapse",
+                backgroundColor: "#ffffff",
+                width: "fit-content",
+                margin: "20px auto",
+              }}
+            >
               <thead>
                 <tr>
-                  <th className="border  border-gray-600  px-4 py-2 text-sm " />
-
+                  <th
+                    style={{
+                      border: "1px solid #4b5563",
+                      padding: "16px",
+                      fontSize: "14px",
+                      backgroundColor: "#ffffff",
+                      color: "#1f2937",
+                    }}
+                  />
                   {times.map((time) => (
                     <th
                       key={time}
-                      className="border whitespace-nowrap border-gray-500  px-4 py-2"
+                      style={{
+                        border: "1px solid #4b5563",
+                        padding: "16px",
+                        whiteSpace: "nowrap",
+                        backgroundColor: "#ffffff",
+                        color: "#1f2937",
+                      }}
                     >
                       {format12Hour(time)}
                     </th>
@@ -365,13 +429,26 @@ const Routine = () => {
               <tbody>
                 {daySlots.slice(3).map((daySlot) => (
                   <tr key={daySlot.value}>
-                    <td className="border border-gray-500  px-4 py-2">
+                    <td
+                      style={{
+                        border: "1px solid #4b5563",
+                        padding: "16px",
+                        backgroundColor: "#ffffff",
+                        color: "#1f2937",
+                      }}
+                    >
                       {daySlot.label}
                     </td>
                     {times.map((time) => (
                       <td
                         key={time}
-                        className="border  border-gray-600 text-center  px-4 py-2"
+                        style={{
+                          border: "1px solid #4b5563",
+                          padding: "16px",
+                          backgroundColor: "#ffffff",
+                          textAlign: "center",
+                          minWidth: "120px",
+                        }}
                       >
                         <div
                           contentEditable={true}
@@ -384,6 +461,11 @@ const Routine = () => {
                             newRoutine[daySlot.value][time] =
                               e.target.textContent;
                             setRoutine(newRoutine);
+                          }}
+                          style={{
+                            minHeight: "24px",
+                            color: "#1f2937",
+                            outline: "none",
                           }}
                         >
                           {routine[daySlot.value] &&
@@ -400,16 +482,12 @@ const Routine = () => {
       </div>
       <div className=" w-fit mx-auto flex gap-10">
         <button
-          onClick={handleDownloadPDF}
-          className="p-3 rounded-lg  bg-indigo-50 hover:bg-indigo-100 "
+          onClick={downloadRoutine}
+          disabled={downloading}
+          className="flex items-center gap-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Download PDF
-        </button>
-        <button
-          className="p-3 rounded-lg  bg-green-50 hover:bg-green-100 "
-          onClick={handledownloadPNG}
-        >
-          Download PNG
+          <Download className="w-5 h-5" />
+          {downloading ? "Downloading..." : "Download Routine"}
         </button>
       </div>
       <div className="divider"></div>

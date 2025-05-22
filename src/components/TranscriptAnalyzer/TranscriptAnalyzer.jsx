@@ -1,264 +1,308 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import * as pdfjsLib from "pdfjs-dist/webpack";
+import { formatTranscriptData } from "./transcriptDataFormatter";
+import { toast } from "react-hot-toast";
 
-// Set worker path for pdf.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+const TranscriptAnalyzer = ({
+  setNormalCourses,
+  setRetakeCourses,
+  setName,
+  setPreviousCGPA,
+  setPreviousEarnedCredit,
+}) => {
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-const parseTranscriptPDF = async (file, onProgress) => {
-  return new Promise((resolve, reject) => {
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile) {
+      if (selectedFile.type !== "application/pdf") {
+        toast.error("Please upload a PDF file", {
+          duration: 2000,
+          position: "top-right",
+          style: {
+            background: "#f44336",
+            color: "white",
+            cursor: "pointer",
+          },
+        });
+        return;
+      }
+      extractTextFromPDF(selectedFile);
+      toast.success("Transcript uploaded successfully", {
+        duration: 2000,
+        position: "top-right",
+        style: {
+          background: "#4CAF50",
+          color: "white",
+          cursor: "pointer",
+        },
+      });
+    }
+  };
+
+  const findPreviousGrade = (courseCode, semesters, currentSemesterIndex) => {
+    // Search from the semester before the current one
+    for (let i = currentSemesterIndex - 1; i >= 0; i--) {
+      const semester = semesters[i];
+      const course = semester.courses.find((c) => c.courseCode === courseCode);
+      if (course) {
+        return course.grade;
+      }
+    }
+    return null;
+  };
+
+  const convertGradeToNumeric = (grade) => {
+    if (grade === "A") return "4.00";
+    if (grade === "A-") return "3.7";
+    if (grade === "B+") return "3.3";
+    if (grade === "B") return "3.0";
+    if (grade === "B-") return "2.7";
+    if (grade === "C+") return "2.3";
+    if (grade === "C") return "2.0";
+    if (grade === "C-") return "1.7";
+    if (grade === "D+") return "1.3";
+    if (grade === "D") return "1.0";
+    if (grade === "F") return "0.0";
+    // Keep I and Z as is
+    return grade;
+  };
+
+  // Helper function to check if a course is a retake
+  const isRetake = (course, allSemesters, currentSemesterIndex) => {
+    // Check if this course appears in any previous semester
+    for (let i = 0; i < currentSemesterIndex; i++) {
+      const previousSemester = allSemesters[i];
+      const previousCourse = previousSemester.courses.find(
+        (c) => c.courseCode === course.courseCode
+      );
+      if (previousCourse) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // Process courses from the last semester and Z grade courses from previous semesters
+  const processCourses = (allSemesters) => {
+    if (!allSemesters.length) return { normalCourses: [], retakeCourses: [] };
+
+    const lastSemester = allSemesters[allSemesters.length - 1];
+    const lastSemesterIndex = allSemesters.length - 1;
+
+    // Collect Z grade courses from previous semesters
+    const previousZGradeCourses = allSemesters
+      .slice(0, -1) // Exclude last semester
+      .flatMap((semester, semesterIndex) =>
+        semester.courses
+          .filter((course) => course.grade === "Z")
+          .map((course) => {
+            const isRetakeCourse = isRetake(
+              course,
+              allSemesters,
+              semesterIndex
+            );
+            const previousGrade = isRetakeCourse
+              ? findPreviousGrade(
+                  course.courseCode,
+                  allSemesters,
+                  semesterIndex
+                )
+              : null;
+
+            return {
+              courseCode: course.courseCode,
+              courseName: course.courseTitle,
+              credits: course.creditHours.toString(),
+              previousGrade: previousGrade
+                ? convertGradeToNumeric(previousGrade)
+                : "3.70",
+              grade: "Z",
+              isRetake: isRetakeCourse,
+            };
+          })
+      );
+
+    // Process last semester courses - only include Z grades
+    const lastSemesterCourses = lastSemester.courses
+      .filter((course) => course.grade === "Z")
+      .map((course) => {
+        const isRetakeCourse = isRetake(
+          course,
+          allSemesters,
+          lastSemesterIndex
+        );
+        const previousGrade = isRetakeCourse
+          ? findPreviousGrade(
+              course.courseCode,
+              allSemesters,
+              lastSemesterIndex
+            )
+          : null;
+
+        return {
+          courseCode: course.courseCode,
+          courseName: course.courseTitle,
+          credits: course.creditHours.toString(),
+          previousGrade: previousGrade
+            ? convertGradeToNumeric(previousGrade)
+            : "3.70",
+          grade: "Z",
+          isRetake: isRetakeCourse,
+        };
+      });
+
+    // Combine and categorize all courses
+    const allCourses = [...lastSemesterCourses, ...previousZGradeCourses];
+
+    return {
+      normalCourses: allCourses
+        .filter((course) => !course.isRetake && course.grade === "Z")
+        .map(({ courseCode, courseName, credits, grade }) => ({
+          courseCode,
+          courseName,
+          credits,
+          grade,
+        })),
+      retakeCourses: allCourses
+        .filter((course) => course.isRetake && course.grade === "Z")
+        .map(({ courseCode, courseName, credits, previousGrade, grade }) => ({
+          courseCode,
+          courseName,
+          credits,
+          previousGrade,
+          grade,
+        })),
+    };
+  };
+
+  const extractTextFromPDF = async (file) => {
+    setLoading(true);
+    setError(null);
     const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const typedArray = new Uint8Array(event.target.result);
-        const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
-        onProgress(10); // PDF loaded
 
-        let lines = [];
+    reader.onload = async function () {
+      try {
+        const typedarray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+        let fullText = [];
 
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent();
+          let pageText = "";
           let currentLine = "";
-          textContent.items.forEach((item) => {
-            if (item.str.trim() !== "") {
-              currentLine += item.str + " ";
-            }
+
+          for (const item of textContent.items) {
+            currentLine += item.str + " ";
             if (item.hasEOL) {
-              if (currentLine.trim() !== "") {
-                lines.push(currentLine.trim());
-              }
+              pageText += currentLine.trim() + "\n";
               currentLine = "";
             }
-          });
-          // Push the last line if it's not empty
-          if (currentLine.trim() !== "") {
-            lines.push(currentLine.trim());
           }
-          onProgress(10 + (i / pdf.numPages) * 80); // Update progress as pages are processed
+
+          if (currentLine.trim()) {
+            pageText += currentLine.trim() + "\n";
+          }
+
+          fullText = fullText.concat(
+            pageText.split("\n").filter((line) => line.trim() !== "")
+          );
         }
 
-        // Split the array into three parts
-        const personalInfo = lines.slice(0, 5);
-        const conclusionInfo = lines.slice(-4);
-        const courseInfo = lines.slice(5, -5);
-        // Remove the first item from courseInfo
-        courseInfo.shift();
+        // Process the extracted text using formatTranscriptData
+        const formattedData = formatTranscriptData(fullText);
+        console.log("Formatted Transcript Data:", formattedData);
 
-        // Create a 2D array from courseInfo
-        const courseInfoArray = [];
-        let currentSemester = [];
+        // Set student information
+        setName(formattedData.studentName || "");
 
-        courseInfo.forEach((line) => {
-          if (line.startsWith("GPA :")) {
-            currentSemester.push(line.trim());
-            courseInfoArray.push(currentSemester);
-            currentSemester = [];
-          } else if (line.includes("Semester Total :")) {
-            currentSemester.push(line.trim());
-          } else if (line.match(/^[A-Z]+ \d{4}$/)) {
-            if (currentSemester.length > 0) {
-              courseInfoArray.push(currentSemester);
-            }
-            currentSemester = [line.trim()];
+        // Set previous CGPA and credits from the academic record
+        const academicRecord = formattedData.academicRecord;
+        if (academicRecord) {
+          // Set previous CGPA (excluding current semester)
+          const previousSemesters = academicRecord.semesters.slice(0, -1);
+          if (previousSemesters.length > 0) {
+            const previousCGPA = academicRecord.cumulativeGPA;
+            const previousCredits = academicRecord.totalCreditsEarned;
+
+            setPreviousCGPA(previousCGPA?.toString() || "");
+            setPreviousEarnedCredit(previousCredits?.toString() || "");
           } else {
-            currentSemester.push(line.trim());
+            // If no previous semesters, clear the fields
+            setPreviousCGPA("");
+            setPreviousEarnedCredit("");
           }
-        });
-
-        if (currentSemester.length > 0) {
-          courseInfoArray.push(currentSemester);
         }
 
-        const lastSemester = courseInfoArray[courseInfoArray.length - 1];
-        const extractedCourses = lastSemester.slice(1, -1).map((course) => {
-          const parts = course.split(" ");
-          const courseCode = parts[0];
-          const credit = parseFloat(parts[parts.length - 4]);
-          const courseTitle = parts.slice(1, -5).join(" ");
-          return { courseCode, courseTitle, credit };
-        });
-        console.log(courseInfoArray);
-        console.log("Extracted Courses:", extractedCourses);
-
-        // Extract credits from conclusionInfo
-        const creditsLine = conclusionInfo.find((line) =>
-          line.includes("Total Credits Earned :")
+        // Process the courses
+        const { normalCourses, retakeCourses } = processCourses(
+          formattedData.academicRecord.semesters
         );
-        const credits = creditsLine ? creditsLine.split(":")[1].trim() : "N/A";
 
-        onProgress(100); // Parsing complete
-        resolve({
-          personalInfo,
-          courseInfo: extractedCourses,
-          conclusionInfo,
-          credits,
+        // Update the parent component with courses
+        setNormalCourses(
+          normalCourses.length
+            ? normalCourses
+            : [{ courseCode: "", courseName: "", credits: "3", grade: "4.00" }]
+        );
+        setRetakeCourses(retakeCourses.length ? retakeCourses : []);
+
+        setLoading(false);
+        toast.success("Transcript processed successfully", {
+          duration: 2000,
+          position: "top-right",
+          style: {
+            background: "#4CAF50",
+            color: "white",
+            cursor: "pointer",
+          },
+          onClick: () => toast.dismiss(),
         });
-      } catch (error) {
-        reject(error);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+        console.error("Error processing PDF:", err);
+        toast.error("Error processing transcript. Please try again.", {
+          duration: 4000,
+          position: "top-right",
+          style: {
+            background: "#f44336",
+            color: "white",
+            cursor: "pointer",
+          },
+        });
       }
     };
-    reader.onerror = (error) => reject(error);
+
     reader.readAsArrayBuffer(file);
-  });
-};
-
-const TranscriptAnalyzer = () => {
-  const [file, setFile] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [transcriptInfo, setTranscriptInfo] = useState(null);
-  const [name, setName] = useState("");
-  const [cgpa, setCgpa] = useState("");
-  const [credits, setCredits] = useState("");
-  const [courses, setCourses] = useState([]);
-  const modalRef = useRef(null);
-
-  useEffect(() => {
-    const handleError = (event) => {
-      console.error("Unhandled error:", event.error);
-      setError(`An unexpected error occurred: ${event.error.message}`);
-      modalRef.current.checked = true;
-    };
-
-    window.addEventListener("error", handleError);
-
-    return () => {
-      window.removeEventListener("error", handleError);
-    };
-  }, []);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile && selectedFile.type === "application/pdf") {
-      setFile(selectedFile);
-      setError(null);
-    } else {
-      setFile(null);
-      setError("Please select a valid PDF file.");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) {
-      setError("Please select a PDF file first.");
-      modalRef.current.checked = true;
-      return;
-    }
-    setLoading(true);
-    setProgress(0);
-    setError(null);
-    try {
-      const info = await parseTranscriptPDF(file, setProgress);
-      console.log("Extracted Data:", info);
-      setTranscriptInfo(info);
-      setName(info.personalInfo[0]);
-      setCgpa(info.conclusionInfo[1].split(":")[1].trim());
-      setCredits(info.credits);
-      setCourses(info.courseInfo);
-    } catch (err) {
-      setError(`Error parsing PDF: ${err.message}`);
-      modalRef.current.checked = true;
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">PDF Transcript Viewer</h1>
-      {transcriptInfo && (
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold mb-2">
-            Transcript Information:
-          </h2>
-          <p>
-            <strong>Name:</strong> {name}
-          </p>
-          <p>
-            <strong>GPA:</strong> {cgpa}
-          </p>
-          <p>
-            <strong>Total Credits Earned:</strong> {credits}
-          </p>
-          <h3 className="text-xl font-semibold mt-4 mb-2">Courses:</h3>
-          <table className="table w-full">
-            <thead>
-              <tr>
-                <th>Course Code</th>
-                <th>Course Title</th>
-                <th>Credit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course, index) => (
-                <tr key={index}>
-                  <td>{course.courseCode}</td>
-                  <td>{course.courseTitle}</td>
-                  <td>{course.credit}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      <form onSubmit={handleSubmit} className="mb-6">
-        <div className="mb-4">
-          <label
-            className="block text-sm font-medium mb-2"
-            htmlFor="pdf-upload"
-          >
-            Upload PDF
-          </label>
-          <input
-            id="pdf-upload"
-            type="file"
-            onChange={handleFileChange}
-            accept=".pdf"
-            className="file-input file-input-bordered w-full max-w-xs"
-          />
-        </div>
-        <button
-          type="submit"
-          className={`btn ${loading ? "btn-disabled" : "btn-primary"}`}
-          disabled={!file || loading}
-        >
-          {loading ? "Processing..." : "Submit"}
-        </button>
-      </form>
-
-      {loading && (
-        <div className="mb-6">
-          <progress
-            className="progress progress-primary w-full"
-            value={progress}
-            max="100"
-          ></progress>
-          <p className="text-sm mt-2">
-            Extracting data: {Math.round(progress)}% complete
-          </p>
-        </div>
-      )}
-
-      {/* DaisyUI Modal for Error Alert */}
+    <div className="bg-indigo-50 shadow-xl hover:bg-indigo-100 p-8 rounded-xl">
+      <h3 className="text-lg font-semibold mb-2">Upload Your Transcript</h3>
       <input
-        type="checkbox"
-        id="error-modal"
-        className="modal-toggle"
-        ref={modalRef}
+        type="file"
+        accept=".pdf"
+        onChange={handleFileChange}
+        className="file-input bg-indigo-100 hover:bg-indigo-50 file-input-bordered w-full max-w-xs"
       />
-      <div className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Error</h3>
-          <p className="py-4">{error}</p>
-          <div className="modal-action">
-            <label htmlFor="error-modal" className="btn">
-              Close
-            </label>
-          </div>
+      {loading && (
+        <div className="flex justify-center items-center mt-4">
+          <span className="loading loading-spinner loading-lg"></span>
         </div>
-      </div>
+      )}
+      {error && (
+        <p className="mt-2 text-sm text-red-600">
+          Error: {error}. Please try again with a valid transcript.
+        </p>
+      )}
+      {!loading && !error && file && (
+        <p className="mt-2 text-sm text-gray-600">File uploaded: {file.name}</p>
+      )}
     </div>
   );
 };

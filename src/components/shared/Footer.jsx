@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FaGlobe, FaFacebook, FaLinkedin, FaGithub } from "react-icons/fa";
 import { SiLeetcode, SiResearchgate } from "react-icons/si";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const socialLinks = [
@@ -35,6 +36,12 @@ const Footer = () => {
     //   url: "https://leetcode.com/u/mah-mu-dul/",
     //   label: "LeetCode",
     // },
+  ];
+
+  const footerLinks = [
+    { to: "/about", label: "About" },
+    { to: "/contact", label: "Contact" },
+    { to: "/privacy-policy", label: "Privacy Policy" },
   ];
 
   return (
@@ -77,7 +84,23 @@ const Footer = () => {
             </motion.a>
           ))}
         </motion.div>
-
+        {/* Footer Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex justify-center items-center gap-6 mt-4"
+        >
+          {footerLinks.map((link, index) => (
+            <Link
+              key={index}
+              to={link.to}
+              className="text-gray-600 border-b-2 hover:text-blue-600 transition-colors duration-200"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,7 +108,7 @@ const Footer = () => {
           className="mt-6 text-center text-sm text-gray-500"
         >
           <p>
-            Made with {" "}
+            Made with{" "}
             <span className="text-blue-600 font-medium">React vite</span>
           </p>
         </motion.div>

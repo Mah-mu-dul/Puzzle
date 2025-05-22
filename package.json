@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -28,6 +28,7 @@
     "fuse.js": "^7.1.0",
     "gapi-script": "^1.2.0",
     "html2canvas": "^1.4.1",
+    "html2canvas-pro": "^1.5.11",
     "html2pdf.js": "^0.9.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.6.0",

@@ -14,6 +14,8 @@ const Navbar = () => {
     { to: "/finance", label: "Finance" },
     { to: "/courses", label: "Courses" },
     { to: "/blogs", label: "Blogs" },
+    { to: "/about", label: "About" },
+    { to: "/contact", label: "Contact" },
   ];
 
   const NavItem = ({ to, label }) => (

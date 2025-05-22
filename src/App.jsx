@@ -8,6 +8,7 @@ import MorseCodeConverter from "./Components/MorseCodeConverter";
 import Docs from "./Components/Docs";
 import { useEffect, useState } from "react";
 import Layout from "./components/shared/Layout";
+import { Toaster } from "react-hot-toast";
 
 import Game2048 from "./components/Game2048/Game2048.jsx";
 import HomeClap369 from "./components/Clap369/Clap369Home.jsx";
@@ -48,6 +49,10 @@ import ChatLanding from "./components/chat/ChatLanding.jsx";
 import TranscriptAnalyzer3 from "./components/TranscriptAnalyzer/TranscriptAnalyzer3.jsx";
 import RetakeAssistant from "./Components/TranscriptAnalyzer/RetakeAssistant.jsx";
 import BuyMeACoffee from "./components/BuyMeCoffee/BuyMeACoffee.jsx";
+import CalculateCg2 from "./components/CGCalculator/CalculateCg2.jsx";
+import ReactionDot from "./pages/reactionDot/ReactionDot.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Contact from "./pages/Contact";
 // import TranscriptAnalyzer3 from "./components/TranscriptAnalyzer/TranscriptAnalyzer3.jsx";
 const trackingId = "";
 
@@ -77,56 +82,71 @@ function App() {
   }, []);
 
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/chat" element={<ChatLanding />} />
+    <>
+      <Toaster position="top-right" />
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/chat" element={<ChatLanding />} />
 
-        <Route path="/student-tools" element={<StudentsTools />} />
-        <Route path="/games" element={<Games />} />
-        <Route path="/tools" element={<Tools />} />
-        <Route path="/planners" element={<Planners />} />
-        <Route path="/finance" element={<Finance />} />
-        <Route path="/cs-courses" element={<CSCourses />} />
-        <Route path="/academic-analysis" element={<AcademicAnalysis />} />
-        <Route path="/solver/sudoku" element={<SudokuSolver />} />
-        <Route path="/Connect4" element={<Connect4Game />} />
-        <Route path="/game2048" element={<Game2048 />} />
-        <Route path="/clap369" element={<HomeClap369 />} />
-        <Route path="/clap369/start" element={<ProtectedClap369 />} />
-        <Route path="/tictactoe" element={<TicTacToe />} />
-        <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
-        <Route path="/docs" element={<Docs />} />
-        <Route path="/calculate-cg" element={<CalculateCg />} />
-        <Route path="/routine" element={<Routine />} />
-        <Route path="/youtube-api" element={<YoutubeApi1 />} />
-        <Route path="/test" element={<Test />} />
-        <Route path="/qr" element={<QRCodeGenerator />} />
-        <Route path="/word-count" element={<WordCounter />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/money-management" element={<MoneyManagement />} />
-        <Route path="/cost-calculator" element={<CostCalculate />} />
-        <Route path="/retake-assistant" element={<RetakeAssistant />} />
-        <Route path="/courses" element={<Circuit />} />
-        <Route path="/courses/dld" element={<DLD />} />
-        <Route path="/courses/automata" element={<AutomataLanding />} />
-        {/* <Route path="/courses/dbms-normalization" element={<Normalization />} /> */}
-        <Route path="/courses/automata/minimizeDFA" element={<MinimizeDFA />} />
-        <Route path="/courses/circuit-analysis" element={<CircuitAnalysis />} />
-        <Route path="/courses/electronics-1" element={<Electronics1 />} />
-        <Route path="/courses/electronics-2" element={<Electronics2 />} />
-        <Route
-          path="/stickCalculator"
-          element={<AluminumProfileLengthCalculator />}
-        />
-        <Route path="/transcript-analyzer" element={<TranscriptAnalyzer3 />} />
-        <Route path="/blogs" element={<Blogs />} />
-        <Route path="/buy-me-a-coffee" element={<BuyMeACoffee />} />
+          <Route path="/student-tools" element={<StudentsTools />} />
+          <Route path="/games" element={<Games />} />
+          <Route path="/tools" element={<Tools />} />
+          <Route path="/planners" element={<Planners />} />
+          <Route path="/finance" element={<Finance />} />
+          <Route path="/cs-courses" element={<CSCourses />} />
+          <Route path="/academic-analysis" element={<AcademicAnalysis />} />
+          <Route path="/solver/sudoku" element={<SudokuSolver />} />
+          <Route path="/Connect4" element={<Connect4Game />} />
+          <Route path="/reaction-dot" element={<ReactionDot />} />
+          <Route path="/game2048" element={<Game2048 />} />
+          <Route path="/clap369" element={<HomeClap369 />} />
+          <Route path="/clap369/start" element={<ProtectedClap369 />} />
+          <Route path="/tictactoe" element={<TicTacToe />} />
+          <Route path="/convert/morsecode" element={<MorseCodeConverter />} />
+          <Route path="/docs" element={<Docs />} />
+          <Route path="/calculate-cg" element={<CalculateCg2 />} />
+          <Route path="/routine" element={<Routine />} />
+          <Route path="/youtube-api" element={<YoutubeApi1 />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/qr" element={<QRCodeGenerator />} />
+          <Route path="/word-count" element={<WordCounter />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/money-management" element={<MoneyManagement />} />
+          <Route path="/cost-calculator" element={<CostCalculate />} />
+          <Route path="/retake-assistant" element={<RetakeAssistant />} />
+          <Route path="/courses" element={<Circuit />} />
+          <Route path="/courses/dld" element={<DLD />} />
+          <Route path="/courses/automata" element={<AutomataLanding />} />
+          {/* <Route path="/courses/dbms-normalization" element={<Normalization />} /> */}
+          <Route
+            path="/courses/automata/minimizeDFA"
+            element={<MinimizeDFA />}
+          />
+          <Route
+            path="/courses/circuit-analysis"
+            element={<CircuitAnalysis />}
+          />
+          <Route path="/courses/electronics-1" element={<Electronics1 />} />
+          <Route path="/courses/electronics-2" element={<Electronics2 />} />
+          <Route
+            path="/stickCalculator"
+            element={<AluminumProfileLengthCalculator />}
+          />
+          <Route
+            path="/transcript-analyzer"
+            element={<TranscriptAnalyzer3 />}
+          />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/buy-me-a-coffee" element={<BuyMeACoffee />} />
 
-        <Route path="/blog/stick-calculator" element={<StickCalculator />} />
-        <Route path="/*" element={<Error />} />
-      </Routes>
-    </Layout>
+          <Route path="/blog/stick-calculator" element={<StickCalculator />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/*" element={<Error />} />
+        </Routes>
+      </Layout>
+    </>
   );
 }
 
