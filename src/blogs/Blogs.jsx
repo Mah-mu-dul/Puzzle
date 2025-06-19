@@ -13,6 +13,7 @@ const Blogs = () => {
       link: "/blog/stick-calculator",
       image: blogImage, // Added image property to the blog post object
     },
+  
   ];
 
   return (

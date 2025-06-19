@@ -14,6 +14,29 @@ const TranscriptAnalyzer = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const handleClearData = () => {
+    // Reset all states
+    setFile(null);
+    setError(null);
+    setPreviousCGPA("");
+    setPreviousEarnedCredit("");
+    setNormalCourses([
+      { courseCode: "", courseName: "", credits: "3", grade: "4.00" },
+    ]);
+    setRetakeCourses([]);
+
+    // Show success toast
+    toast.success("All data cleared successfully", {
+      duration: 2000,
+      position: "top-right",
+      style: {
+        background: "#4CAF50",
+        color: "white",
+        cursor: "pointer",
+      },
+    });
+  };
+
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
@@ -283,7 +306,16 @@ const TranscriptAnalyzer = ({
 
   return (
     <div className="bg-indigo-50 shadow-xl hover:bg-indigo-100 p-8 rounded-xl">
-      <h3 className="text-lg font-semibold mb-2">Upload Your Transcript</h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Upload Your Transcript</h3>
+        <button
+          onClick={handleClearData}
+          className="btn btn-error btn-sm text-white"
+          disabled={loading}
+        >
+          Clear Data
+        </button>
+      </div>
       <input
         type="file"
         accept=".pdf"

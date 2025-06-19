@@ -26,7 +26,7 @@ import TranscriptAnalyzer from "./Components/TranscriptAnalyzer/TranscriptAnalyz
 import AluminumProfileLengthCalculator from "./components/calculators/StickLengthCalculator.jsx";
 import CalculateCg from "./components/CGCalculator/CalculateCg.jsx";
 import Home from "./components/Home.jsx";
-import CostCalculate from "./components/Routine/CostCalculate.jsx";
+import CostCalculate from "./Components/Routine/CostCalculate.jsx";
 import StickCalculator from "./blogs/stickcalculator/StickCalculatorBlog.jsx";
 import Blogs from "./blogs/Blogs.jsx";
 import Circuit from "./components/Circuits/Circuit.jsx";
@@ -53,6 +53,7 @@ import CalculateCg2 from "./components/CGCalculator/CalculateCg2.jsx";
 import ReactionDot from "./pages/reactionDot/ReactionDot.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Contact from "./pages/Contact";
+import PreviousSemQuestions from "./pages/PreviousSemQuestions";
 // import TranscriptAnalyzer3 from "./components/TranscriptAnalyzer/TranscriptAnalyzer3.jsx";
 const trackingId = "";
 
@@ -143,6 +144,10 @@ function App() {
           <Route path="/blog/stick-calculator" element={<StickCalculator />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/contact" element={<Contact />} />
+          <Route
+            path="/previous-sem-questions"
+            element={<PreviousSemQuestions />}
+          />
           <Route path="/*" element={<Error />} />
         </Routes>
       </Layout>

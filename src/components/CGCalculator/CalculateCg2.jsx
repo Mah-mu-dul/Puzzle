@@ -10,7 +10,7 @@ const CalculateCg2 = () => {
   const [previousCGPA, setPreviousCGPA] = useState("");
   const [previousEarnedCredit, setPreviousEarnedCredit] = useState("");
   const [normalCourses, setNormalCourses] = useState([
-    { courseCode: "", courseName: "", credits: "3", grade: "4.00" },
+    { courseCode: "", courseName: "", credits: "", grade: "4.00" },
   ]);
   const [retakeCourses, setRetakeCourses] = useState([
     {
@@ -64,6 +64,78 @@ const CalculateCg2 = () => {
     { value: "1.0", label: "D" },
     { value: "0.0", label: "F" },
   ];
+
+  // Add validation handlers
+  const validateCGPA = (value) => {
+    const num = parseFloat(value);
+    if (isNaN(num)) return "";
+    if (num < 0) return "0.00";
+    if (num > 4.0) return "4.00";
+    return value;
+  };
+
+  const validateCredits = (value) => {
+    const num = parseFloat(value);
+    if (isNaN(num)) return "";
+    if (num < 0) return "0";
+    if (num > 6) return "6"; // Assuming max credit per course is 6
+    return value;
+  };
+
+  const validatePreviousCredits = (value) => {
+    const num = parseFloat(value);
+    if (isNaN(num)) return "";
+    if (num < 0) return "0";
+    if (num > 200) return "200"; // Assuming max total credits is 200
+    return value;
+  };
+
+  // Modify input handlers to include validation
+  const handlePreviousCGPAChange = (e) => {
+    const value = e.target.value;
+    setPreviousCGPA(validateCGPA(value));
+  };
+
+  const handlePreviousCreditsChange = (e) => {
+    const value = e.target.value;
+    setPreviousEarnedCredit(validatePreviousCredits(value));
+  };
+
+  const handleNormalCourseInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const updatedCourses = [...normalCourses];
+
+    if (name === "credits") {
+      updatedCourses[index] = {
+        ...updatedCourses[index],
+        [name]: validateCredits(value),
+      };
+    } else {
+      updatedCourses[index] = {
+        ...updatedCourses[index],
+        [name]: value,
+      };
+    }
+    setNormalCourses(updatedCourses);
+  };
+
+  const handleRetakeInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const updatedCourses = [...retakeCourses];
+
+    if (name === "credits") {
+      updatedCourses[index] = {
+        ...updatedCourses[index],
+        [name]: validateCredits(value),
+      };
+    } else {
+      updatedCourses[index] = {
+        ...updatedCourses[index],
+        [name]: value,
+      };
+    }
+    setRetakeCourses(updatedCourses);
+  };
 
   // Calculate total points for normal courses
   const calculateTotalPoints = () => {
@@ -171,26 +243,6 @@ const CalculateCg2 = () => {
       },
       onClick: () => toast.dismiss(),
     });
-  };
-
-  const handleNormalCourseInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const updatedCourses = [...normalCourses];
-    updatedCourses[index] = {
-      ...updatedCourses[index],
-      [name]: value,
-    };
-    setNormalCourses(updatedCourses);
-  };
-
-  const handleRetakeInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const updatedCourses = [...retakeCourses];
-    updatedCourses[index] = {
-      ...updatedCourses[index],
-      [name]: value,
-    };
-    setRetakeCourses(updatedCourses);
   };
 
   // Function to identify problematic retake rows
@@ -391,7 +443,16 @@ const CalculateCg2 = () => {
                 step="0.01"
                 placeholder={previousEarnedCredit ? "Mandatory" : "optional"}
                 value={previousCGPA}
-                onChange={(e) => setPreviousCGPA(e.target.value)}
+                onChange={handlePreviousCGPAChange}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  if (value && parseFloat(value) > 4.0) {
+                    toast.error("CGPA cannot be greater than 4.00", {
+                      duration: 2000,
+                      position: "top-right",
+                    });
+                  }
+                }}
               />
             </div>
 
@@ -404,8 +465,20 @@ const CalculateCg2 = () => {
                 type="number"
                 placeholder={previousCGPA ? "Mandatory" : "optional"}
                 id="previousEarnedCredit"
+                min="0"
+                max="200"
+                step="1"
                 value={previousEarnedCredit}
-                onChange={(e) => setPreviousEarnedCredit(e.target.value)}
+                onChange={handlePreviousCreditsChange}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  if (value && parseFloat(value) > 200) {
+                    toast.error("Total credits cannot exceed 200", {
+                      duration: 2000,
+                      position: "top-right",
+                    });
+                  }
+                }}
               />
             </div>
           </div>
@@ -442,10 +515,22 @@ const CalculateCg2 = () => {
                           type="number"
                           placeholder="Credits"
                           name="credits"
+                          min="0"
+                          max="6"
+                          step="1"
                           value={row.credits}
                           onChange={(e) =>
                             handleNormalCourseInputChange(e, index)
                           }
+                          onBlur={(e) => {
+                            const value = e.target.value;
+                            if (value && parseFloat(value) > 6) {
+                              toast.error("Course credits cannot exceed 6", {
+                                duration: 2000,
+                                position: "top-right",
+                              });
+                            }
+                          }}
                         />
                       </td>
                       <td>
@@ -511,11 +596,7 @@ const CalculateCg2 = () => {
                     <tr key={index}>
                       <td>
                         <input
-                          className={`bg-white px-2 md:w-48 w-[90px] rounded border ${
-                            problematicRetakeRows.includes(index)
-                              ? "border-red-500"
-                              : "border-gray-200"
-                          } focus:outline-none focus:border-green-500 hover:border-green-500`}
+                          className={`bg-white px-2 md:w-48 w-[90px] rounded border focus:outline-none focus:border-green-500 hover:border-green-500`}
                           type="text"
                           placeholder="Course Name"
                           name="courseName"
@@ -527,23 +608,31 @@ const CalculateCg2 = () => {
                         <input
                           className={`bg-white rounded mx-2 lg:mx-5 border ${
                             problematicRetakeRows.includes(index)
-                              ? "border-red-500"
-                              : "border-gray-200"
-                          } focus:outline-none focus:border-green-500 hover:border-green-500 w-20 px-2`}
+                              ? "border-red-500 focus:border-red-500 hover:border-red-500"
+                              : "border-gray-200 focus:border-green-500 hover:border-green-500"
+                          } focus:outline-none w-20 px-2`}
                           type="number"
                           placeholder="Credits"
                           name="credits"
+                          min="0"
+                          max="6"
+                          step="1"
                           value={row.credits}
                           onChange={(e) => handleRetakeInputChange(e, index)}
+                          onBlur={(e) => {
+                            const value = e.target.value;
+                            if (value && parseFloat(value) > 6) {
+                              toast.error("Course credits cannot exceed 6", {
+                                duration: 2000,
+                                position: "top-right",
+                              });
+                            }
+                          }}
                         />
                       </td>
                       <td>
                         <select
-                          className={`bg-white px-2 mr-2 lg:mr-5 rounded border ${
-                            problematicRetakeRows.includes(index)
-                              ? "border-red-500"
-                              : "border-gray-200"
-                          } focus:outline-none focus:border-green-500 hover:border-green-500`}
+                          className={`bg-white px-2 mr-2 lg:mr-5 rounded border  focus:outline-none focus:border-green-500 hover:border-green-500`}
                           name="previousGrade"
                           value={row.previousGrade}
                           onChange={(e) => handleRetakeInputChange(e, index)}
@@ -557,11 +646,7 @@ const CalculateCg2 = () => {
                       </td>
                       <td>
                         <select
-                          className={`bg-white px-2 mr-2 lg:mr-5 rounded border ${
-                            problematicRetakeRows.includes(index)
-                              ? "border-red-500"
-                              : "border-gray-200"
-                          } focus:outline-none focus:border-green-500 hover:border-green-500`}
+                          className={`bg-white px-2 mr-2 lg:mr-5 rounded border focus:outline-none focus:border-green-500 hover:border-green-500`}
                           name="grade"
                           value={row.grade}
                           onChange={(e) => handleRetakeInputChange(e, index)}
