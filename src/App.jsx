@@ -54,6 +54,7 @@ import ReactionDot from "./pages/reactionDot/ReactionDot.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Contact from "./pages/Contact";
 import PreviousSemQuestions from "./pages/PreviousSemQuestions";
+import Contribute from "./pages/Contribute";
 // import TranscriptAnalyzer3 from "./components/TranscriptAnalyzer/TranscriptAnalyzer3.jsx";
 const trackingId = "";
 
@@ -148,6 +149,7 @@ function App() {
             path="/previous-sem-questions"
             element={<PreviousSemQuestions />}
           />
+          <Route path="/contribute" element={<Contribute />} />
           <Route path="/*" element={<Error />} />
         </Routes>
       </Layout>

@@ -17,6 +17,8 @@ import {
   CheckCircle,
   Clock,
   Award,
+  BookOpen,
+  Upload,
 } from "lucide-react";
 import { FaHandsClapping } from "react-icons/fa6";
 
@@ -70,6 +72,22 @@ const tools = [
     path: "/money-management",
     color: "bg-cyan-50 hover:bg-cyan-100",
     iconColor: "text-cyan-600",
+  },
+  {
+    title: "Previous Semester Questions",
+    description: "Browse and download past exam questions",
+    icon: <BookOpen className="w-6 h-6" />,
+    path: "/previous-sem-questions",
+    color: "bg-cyan-50 hover:bg-cyan-100",
+    iconColor: "text-cyan-600",
+  },
+  {
+    title: "Contribute a Question",
+    description: "Share your own previous questions with others",
+    icon: <Upload className="w-6 h-6" />,
+    path: "/contribute",
+    color: "bg-lime-50 hover:bg-lime-100",
+    iconColor: "text-lime-600",
   },
 ];
 

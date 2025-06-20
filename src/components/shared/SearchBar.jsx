@@ -119,6 +119,16 @@ const searchableRoutes = [
   },
   { path: "/docs", title: "Documentation", category: "Content" },
   { path: "/about", title: "About Us", category: "Content" },
+  {
+    path: "/previous-sem-questions",
+    title: "Previous Semester Questions",
+    category: "Student Tools",
+  },
+  {
+    path: "/contribute",
+    title: "Contribute a Question",
+    category: "Student Tools",
+  },
 ];
 
 const fuseOptions = {

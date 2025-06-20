@@ -8,13 +8,10 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 
-const icons = [FaBook, FaChalkboardTeacher, FaGraduationCap, FaClipboardList];
-
 const PreviousSemQuestionsGrid = ({ questions }) => {
   return (
     <div className="flex flex-wrap justify-evenly gap-4">
       {questions.map((q, i) => {
-        const Icon = icons[i % icons.length];
         return (
           <motion.div
             key={q.id}
@@ -23,7 +20,6 @@ const PreviousSemQuestionsGrid = ({ questions }) => {
             transition={{ delay: i * 0.08, type: "spring", stiffness: 80 }}
             className="flex flex-col items-center"
           >
-            <Icon className="text-2xl mb-2 text-blue-400 animate-pulse" />
             <PreviousSemQuestionsCard question={q} />
           </motion.div>
         );

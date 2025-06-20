@@ -2,6 +2,7 @@ import React from "react";
 
 const semesters = ["Spring", "Autumn", "Summer"];
 const years = ["2024", "2023", "2022", "2021", "2020"];
+const types = ["Quiz 1", "Quiz 2", "Quiz 3", "Quiz 4", "Mid", "Final"];
 
 const PreviousSemQuestionsFilters = ({
   search,
@@ -10,6 +11,8 @@ const PreviousSemQuestionsFilters = ({
   setSemester,
   year,
   setYear,
+  type,
+  setType,
 }) => {
   return (
     <div className="flex flex-wrap gap-4 mb-6 items-center">
@@ -18,8 +21,20 @@ const PreviousSemQuestionsFilters = ({
         placeholder="Search by course name, code, or contributor..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="border border-blue-200 bg-transparent rounded px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder:text-gray-400 transition"
+        className="border border-blue-200 bg-transparent rounded px-3 py-2 w-[14rem] md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder:text-gray-400 transition"
       />
+      <select
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+        className="border  border-blue-200 bg-transparent rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-700"
+      >
+        <option value="">All Types</option>
+        {types.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
       <select
         value={semester}
         onChange={(e) => setSemester(e.target.value)}
