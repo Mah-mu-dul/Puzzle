@@ -133,6 +133,35 @@ const Card = ({ question, onImageClick, imagePreviewModal }) => {
   const handleNext = () =>
     setImgIdx((idx) => (idx === images.length - 1 ? 0 : idx + 1));
 
+  // At the bottom of the card, after contributor or at the bottom, show:
+  // If question.updateTime exists, show 'Updated: ...', else 'Uploaded: ...'
+  const getDateString = () => {
+    if (question.updateTime) {
+      return `Last Updated: ${new Date(
+        question.updateTime
+      ).toLocaleDateString()} at ${new Date(
+        question.updateTime
+      ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    }
+    if (question.uploadTime) {
+      if (typeof question.uploadTime === "string") {
+        return `Uploaded: ${new Date(
+          question.uploadTime
+        ).toLocaleDateString()} at ${new Date(
+          question.uploadTime
+        ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+      }
+      if (question.uploadTime.seconds) {
+        return `Uploaded: ${new Date(
+          question.uploadTime.seconds * 1000
+        ).toLocaleDateString()} at ${new Date(
+          question.uploadTime.seconds * 1000
+        ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+      }
+    }
+    return null;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.97 }}
@@ -142,7 +171,7 @@ const Card = ({ question, onImageClick, imagePreviewModal }) => {
         boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
       }}
       transition={{ type: "spring", stiffness: 120, damping: 14 }}
-      className={`w-[22rem] bg-gradient-to-br ${cardBg} rounded-3xl shadow-xl p-5  relative glass-card overflow-hidden group backdrop-blur-lg`}
+      className={`w-[20rem] bg-gradient-to-br ${cardBg} rounded-3xl shadow-xl p-5  relative glass-card overflow-hidden group backdrop-blur-lg`}
       style={{ minHeight: 370 }}
     >
       <div className="flex items-center gap-2 mb-2">
@@ -214,10 +243,8 @@ const Card = ({ question, onImageClick, imagePreviewModal }) => {
           <span className="text-green-500">
             {semester} {year}
           </span>
-          <span className="ml-auto text-xs text-gray-400">
-            Uploaded: {formatUploadDate(uploadTime)}
-          </span>
         </div>
+        <span className=" text-xs text-gray-400">{getDateString()}</span>
         <div className="flex items-center gap-2 mt-1">
           <span className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold shadow-sm">
             <FaUserCircle className="mr-1 text-blue-400" />

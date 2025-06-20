@@ -8,6 +8,8 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaSpinner,
+  FaExclamationTriangle,
+  FaInfoCircle,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -96,11 +98,15 @@ const PreviousSemQuestions = () => {
   // Filter logic (client-side for search/filters)
   const filteredQuestions = questions.filter((q) => {
     const searchLower = search.toLowerCase();
+    const keywordMatch = Array.isArray(q.keyword)
+      ? q.keyword.some((kw) => kw.toLowerCase().includes(searchLower))
+      : false;
     return (
       (!search ||
         q.courseName.toLowerCase().includes(searchLower) ||
         q.courseCode.toLowerCase().includes(searchLower) ||
-        (q.contributor || "").toLowerCase().includes(searchLower)) &&
+        (q.contributor || "").toLowerCase().includes(searchLower) ||
+        keywordMatch) &&
       (!semester || q.semester === semester) &&
       (!year || q.year === year) &&
       (!type || q.type === type)
@@ -144,12 +150,49 @@ const PreviousSemQuestions = () => {
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4 flex items-center gap-2">
-        <span className="text-blue-600">
-          <FaPlusCircle className="inline-block mr-2 text-3xl" />
-        </span>
+      <h1 className="text-4xl  font-bold mb-4 text-center">
         Previous Semester Questions
       </h1>
+      {/* Caution/Info Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-6 flex flex-col md:flex-row items-center gap-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-xl shadow-sm"
+      >
+        <div className="flex items-center gap-3 text-yellow-600 text-2xl">
+          <FaExclamationTriangle className="animate-bounce" />
+          <span className="font-bold text-lg">Caution!</span>
+        </div>
+        <div className="text-yellow-800 text-base flex-1">
+          <span className="font-semibold text-blue-700">
+            This page showcases previous year questions from various IUB
+            courses, contributed by students.
+          </span>{" "}
+          The collection is growing and covers a range of IUB subjects.{" "}
+          <br className="hidden md:block" />
+          <span className="block mt-2">
+            These questions are{" "}
+            <span className="font-semibold">user-contributed</span> and may
+            contain errors, outdated information, or unofficial content. Always
+            verify with your instructor or official sources before relying on
+            them. Use these resources responsibly and ethically!
+          </span>
+        </div>
+        <div className="hidden md:block text-yellow-500 text-3xl">
+          <FaInfoCircle className="animate-pulse" />
+        </div>
+      </motion.div>
+      {/* Contribute Button */}
+      <motion.button
+        className="mb-8 px-6 py-3 bg-blue-500 text-white rounded-lg flex items-center gap-2 hover:bg-blue-600 transition text-lg font-semibold shadow-lg mx-auto block"
+        whileTap={{ scale: 0.96 }}
+        whileHover={{ scale: 1.04 }}
+        onClick={() => navigate("/contribute")}
+      >
+        <FaPlusCircle className="text-xl" />
+        Contribute a New Question
+      </motion.button>
       <PreviousSemQuestionsFilters
         search={search}
         setSearch={setSearch}

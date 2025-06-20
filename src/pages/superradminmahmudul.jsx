@@ -1,35 +1,37 @@
 import React, { useEffect, useState, useRef } from "react";
-import { db } from "../../firebase.config";
+import { db } from "../firebase.config";
 import {
   collection,
-  query,
-  where,
   getDocs,
   doc,
   updateDoc,
   deleteDoc,
   addDoc,
   serverTimestamp,
-  orderBy,
 } from "firebase/firestore";
 import {
-  FaEdit,
-  FaTrash,
-  FaCheck,
-  FaTimes,
   FaSpinner,
-  FaSearch,
   FaSyncAlt,
+  FaCheck,
+  FaTrash,
+  FaEdit,
+  FaTimes,
+  FaSearch,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
-import ContributeForm from "./ContributeForm";
+import ContributeForm from "./Contribute/ContributeForm";
+import { auth, googleProvider } from "../firebase.config";
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 
 const CARDS_PER_PAGE = 8;
+const SUPER_ADMIN_EMAIL = "work.mahmudulhasan@gmail.com";
 
-const MyContributions = ({ user }) => {
-  const [myQuestions, setMyQuestions] = useState([]);
+const SuperAdminMahmudul = () => {
+  const [user, setUser] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editIdx, setEditIdx] = useState(null);
   const [editData, setEditData] = useState(null);
@@ -39,17 +41,26 @@ const MyContributions = ({ user }) => {
   const [page, setPage] = useState(1);
   const fileInputRef = useRef();
 
-  // Fetch user's questions
+  // Auth check
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (profile) => {
+      if (profile) {
+        setUser({
+          name: profile.displayName,
+          email: profile.email,
+          photo: profile.photoURL,
+        });
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch all questions
   const fetchQuestions = async () => {
-    if (!user?.email) return;
     setLoading(true);
-    const q = query(
-      collection(db, "questions"),
-      where("email", "==", user.email)
-      // No orderBy here to avoid index error
-    );
-    const snap = await getDocs(q);
-    // Sort by uploadTime descending in JS
+    const snap = await getDocs(collection(db, "questions"));
     const docs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     docs.sort((a, b) => {
       const ta = a.uploadTime?.seconds
@@ -60,17 +71,16 @@ const MyContributions = ({ user }) => {
         : Date.parse(b.uploadTime || 0);
       return tb - ta;
     });
-    setMyQuestions(docs);
+    setQuestions(docs);
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchQuestions();
-    // eslint-disable-next-line
+    if (user && user.email === SUPER_ADMIN_EMAIL) fetchQuestions();
   }, [user]);
 
   // Search and pagination logic
-  const filtered = myQuestions.filter((q) => {
+  const filtered = questions.filter((q) => {
     const s = search.toLowerCase();
     const keywordMatch = Array.isArray(q.keyword)
       ? q.keyword.some((kw) => kw.toLowerCase().includes(s))
@@ -137,7 +147,7 @@ const MyContributions = ({ user }) => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const old = myQuestions.find((q) => q.id === editData.id);
+      const old = questions.find((q) => q.id === editData.id);
       let newImages = [];
       // Upload new images to imgbb if any
       for (const img of editData.images) {
@@ -245,14 +255,61 @@ const MyContributions = ({ user }) => {
     setPage(p);
   };
 
+  // Google sign-in
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err) {
+      toast.error("Google sign-in failed");
+    }
+  };
+
+  // Google sign-out
+  const handleSignOut = async () => {
+    await signOut(auth);
+    setUser(null);
+  };
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <button
+          className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 text-lg shadow mt-8"
+          onClick={handleGoogleSignIn}
+        >
+          <FaSearch /> Sign in with Google
+        </button>
+      </div>
+    );
+  }
+
+  if (user.email !== SUPER_ADMIN_EMAIL) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
+        <p className="text-gray-700">
+          You do not have permission to access this page.
+        </p>
+        <button
+          className="mt-6 px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg shadow"
+          onClick={handleSignOut}
+        >
+          <FaSignOutAlt /> Sign out
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-12">
-      <h2 className="text-xl font-bold mb-4 text-blue-700">My Contributions</h2>
+    <div className="max-w-5xl mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
+        Super Admin: All Previous Semester Questions
+      </h1>
       <div className="flex items-center gap-2 mb-4">
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Search by course name, code, or type..."
+            placeholder="Search by course name, code, type, or keyword..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -271,6 +328,12 @@ const MyContributions = ({ user }) => {
           {loading ? <FaSpinner className="animate-spin" /> : <FaSyncAlt />}
           Refresh
         </button>
+        <button
+          className="ml-2 px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg flex items-center gap-2"
+          onClick={handleSignOut}
+        >
+          <FaSignOutAlt /> Sign out
+        </button>
       </div>
       {loading ? (
         <div className="flex flex-col items-center justify-center py-12 text-lg text-blue-600">
@@ -286,7 +349,7 @@ const MyContributions = ({ user }) => {
           </div>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-gray-500">No contributions found.</div>
+        <div className="text-gray-500">No questions found.</div>
       ) : (
         <>
           <div className="flex flex-wrap gap-3">
@@ -398,7 +461,7 @@ const MyContributions = ({ user }) => {
                 <FaTimes />
               </button>
               <div className="font-bold text-lg mb-4 text-blue-700">
-                Edit Contribution
+                Edit Any Question
               </div>
               <ContributeForm
                 form={editData}
@@ -451,4 +514,4 @@ const MyContributions = ({ user }) => {
   );
 };
 
-export default MyContributions;
+export default SuperAdminMahmudul;

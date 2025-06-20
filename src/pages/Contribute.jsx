@@ -30,6 +30,7 @@ const Contribute = () => {
     year: "",
     anonymous: false,
     images: [], // {file, url}
+    keyword: [],
   });
   const [imgModalIdx, setImgModalIdx] = useState(null); // index of image in form.images
   const [zoom, setZoom] = useState(1);
@@ -222,6 +223,7 @@ const Contribute = () => {
         views: 0,
         likes: 0,
         comments: [],
+        keyword: Array.isArray(form.keyword) ? form.keyword : [],
       };
       // 3. Save to backup-questions first (with ISO string for uploadTime and updatedAt, and no undefined fields)
       const backupData = removeUndefined({
@@ -252,6 +254,7 @@ const Contribute = () => {
         year: "",
         anonymous: false,
         images: [],
+        keyword: [],
       });
     } catch (e) {
       toast.error("Submission failed. Try again.");
@@ -263,61 +266,68 @@ const Contribute = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4 flex items-center gap-2 text-blue-700">
-        <FaUpload className="text-blue-400" /> Share a Previous Semester
-        Question
-      </h1>
-      <InfoAlert />
-      <AnimatePresence>
-        {showEmailModal && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+      <div className="bg-white rounded-xl shadow-2xl p-6 mb-8 flex flex-col items-center w-full max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold mb-4 flex justify-center items-center gap-2 text-blue-700">
+          <FaUpload className="text-blue-400" /> Share a Previous Semester
+          Question
+        </h1>
+        <InfoAlert />
+        <AnimatePresence>
+          {showEmailModal && (
             <motion.div
-              className="bg-white rounded-xl shadow-2xl p-8 flex flex-col items-center max-w-sm w-full relative"
-              initial={{ scale: 0.8, y: 40 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: 40 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             >
-              <FaRegSadTear className="text-5xl text-red-400 animate-bounce mb-4" />
-              <div className="text-xl font-bold text-red-600 mb-2 text-center">
-                Only IUB mail accounts are allowed!
-              </div>
-              <div className="text-gray-700 text-center mb-4">
-                You tried to sign in with:
-                <br />
-                <span className="font-semibold text-blue-600">
-                  {pendingGoogleUser?.email}
-                </span>
-                <br />
-                Please use your{" "}
-                <span className="font-semibold">@iub.edu.bd</span> email.
-              </div>
-              <button
-                className="mt-2 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2"
-                onClick={() => setShowEmailModal(false)}
+              <motion.div
+                className="bg-white rounded-xl shadow-2xl p-8 flex flex-col items-center max-w-sm w-full relative"
+                initial={{ scale: 0.8, y: 40 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.8, y: 40 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <FaTimes /> Close
-              </button>
+                <FaRegSadTear className="text-5xl text-red-400 animate-bounce mb-4" />
+                <div className="text-xl font-bold text-red-600 mb-2 text-center">
+                  Only IUB mail accounts are allowed!
+                </div>
+                <div className="text-gray-700 text-center mb-4">
+                  You tried to sign in with:
+                  <br />
+                  <span className="font-semibold text-blue-600">
+                    {pendingGoogleUser?.email}
+                  </span>
+                  <br />
+                  Please use your{" "}
+                  <span className="font-semibold">@iub.edu.bd</span> email.
+                </div>
+                <button
+                  className="mt-2 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2"
+                  onClick={() => setShowEmailModal(false)}
+                >
+                  <FaTimes /> Close
+                </button>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
+        </AnimatePresence>
+        {!user && (
+          <button
+            className="flex mx-auto items-center gap-2 px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 mt-6 text-lg shadow"
+            onClick={handleGoogleSignIn}
+          >
+            <FaGoogle /> Sign in with IUB mail
+          </button>
         )}
-      </AnimatePresence>
+      </div>
       {!user ? (
-        <button
-          className="flex mx-auto items-center gap-2 px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 mb-8 text-lg shadow"
-          onClick={handleGoogleSignIn}
-        >
-          <FaGoogle /> Sign in with IUB mail
-        </button>
+        <h1 className="text-red-600 text-center font-semibold mb-4">
+          Please signin with @iub.edu.bd email to contribute.
+        </h1>
       ) : !user.email.endsWith("@iub.edu.bd") ? (
-        <div className="text-red-600 font-semibold mb-4">
+        <h1 className="text-red-600 text-center font-semibold mb-4">
           You must sign in with your iub.edu.bd email.
-        </div>
+        </h1>
       ) : (
         <>
           <div className="flex items-center gap-4 mb-2">
@@ -353,6 +363,7 @@ const Contribute = () => {
                       ? form.images.map((img) => img.url)
                       : form.images,
                   contributor: form.anonymous ? "Anonymous" : user.name,
+                  keyword: Array.isArray(form.keyword) ? form.keyword : [],
                 }}
                 onImageClick={handlePreviewImage}
                 imagePreviewModal={null}
