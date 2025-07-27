@@ -26,9 +26,17 @@ import ContributeForm from "./Contribute/ContributeForm";
 import { auth, googleProvider } from "../firebase.config";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import PendingQuestionsAdminPortal from "../components/admin/PendingQuestionsAdminPortal";
+import AdminDashboardSummary from "../components/admin/dashboard/AdminDashboardSummary";
+import AdminDashboardQuestionsTable from "../components/admin/dashboard/AdminDashboardQuestionsTable";
+import AdminDashboardBarChart from "../components/admin/dashboard/AdminDashboardBarChart";
+import AdminDashboardPieChart from "../components/admin/dashboard/AdminDashboardPieChart";
+import AdminDashboardActivityLog from "../components/admin/dashboard/AdminDashboardActivityLog";
 
 const CARDS_PER_PAGE = 8;
-const SUPER_ADMIN_EMAIL = "work.mahmudulhasan@gmail.com";
+const SUPER_ADMIN_EMAILS = [
+  "work.mahmudulhasan@gmail.com",
+  "2220622@iub.edu.bd",
+];
 
 const SuperAdminMahmudul = () => {
   const [user, setUser] = useState(null);
@@ -77,7 +85,7 @@ const SuperAdminMahmudul = () => {
   };
 
   useEffect(() => {
-    if (user && user.email === SUPER_ADMIN_EMAIL) fetchQuestions();
+    if (user && SUPER_ADMIN_EMAILS.includes(user.email)) fetchQuestions();
   }, [user]);
 
   // Search and pagination logic
@@ -308,7 +316,7 @@ const SuperAdminMahmudul = () => {
     );
   }
 
-  if (user.email !== SUPER_ADMIN_EMAIL) {
+  if (!SUPER_ADMIN_EMAILS.includes(user.email)) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
@@ -327,6 +335,16 @@ const SuperAdminMahmudul = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-4">
+      {/* Interactive Dashboard Section */}
+      <div className="mb-10 space-y-8">
+        <AdminDashboardSummary questions={questions} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <AdminDashboardBarChart questions={questions} />
+          <AdminDashboardPieChart questions={questions} />
+        </div>
+        <AdminDashboardQuestionsTable questions={questions} />
+        <AdminDashboardActivityLog questions={questions} />
+      </div>
       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
         Super Admin: All Previous Semester Questions
       </h1>
