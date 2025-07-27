@@ -105,6 +105,7 @@ const PreviousSemQuestions = () => {
       (!search ||
         q.courseName.toLowerCase().includes(searchLower) ||
         q.courseCode.toLowerCase().includes(searchLower) ||
+        (q.facultyName || "").toLowerCase().includes(searchLower) ||
         (q.contributor || "").toLowerCase().includes(searchLower) ||
         keywordMatch) &&
       (!semester || q.semester === semester) &&

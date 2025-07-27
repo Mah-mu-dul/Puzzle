@@ -1,7 +1,8 @@
 import React from "react";
 
 const semesters = ["Spring", "Autumn", "Summer"];
-const years = ["2024", "2023", "2022", "2021", "2020"];
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 5 }, (_, i) => String(currentYear - i));
 const types = ["Quiz 1", "Quiz 2", "Quiz 3", "Quiz 4", "Mid", "Final"];
 
 const PreviousSemQuestionsFilters = ({
@@ -18,7 +19,7 @@ const PreviousSemQuestionsFilters = ({
     <div className="flex flex-wrap gap-4 mb-6 items-center">
       <input
         type="text"
-        placeholder="Search by course name, code, or contributor..."
+        placeholder="Search by course name, code, faculty name, or contributor..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="border border-blue-200 bg-transparent rounded px-3 py-2 w-[14rem] md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder:text-gray-400 transition"

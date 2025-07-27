@@ -56,6 +56,7 @@ import Contact from "./pages/Contact";
 import PreviousSemQuestions from "./pages/PreviousSemQuestions";
 import Contribute from "./pages/Contribute";
 import SuperAdminMahmudul from "./pages/superradminmahmudul.jsx";
+import ThimbleRigGame from "./components/thimbleRig/ThimbleRigGame.jsx";
 // import TranscriptAnalyzer3 from "./components/TranscriptAnalyzer/TranscriptAnalyzer3.jsx";
 const trackingId = "";
 
@@ -103,6 +104,7 @@ function App() {
           <Route path="/Connect4" element={<Connect4Game />} />
           <Route path="/reaction-dot" element={<ReactionDot />} />
           <Route path="/game2048" element={<Game2048 />} />
+          <Route path="/thimble-rig" element={<ThimbleRigGame />} />
           <Route path="/clap369" element={<HomeClap369 />} />
           <Route path="/clap369/start" element={<ProtectedClap369 />} />
           <Route path="/tictactoe" element={<TicTacToe />} />

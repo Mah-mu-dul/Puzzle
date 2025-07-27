@@ -23,6 +23,8 @@ const ContributeForm = ({
   handleRemoveImage,
   handlePreviewImage,
   fileInputRef,
+  onCheckDuplicate,
+  checkingDuplicate,
 }) => {
   const keywordInputRef = useRef();
 
@@ -68,6 +70,13 @@ const ContributeForm = ({
           onChange={handleChange}
           placeholder="Course Code (e.g. CSE101)"
           className="border border-blue-200 bg-transparent rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1 min-w-[120px]"
+        />
+        <input
+          name="facultyName"
+          value={form.facultyName || ""}
+          onChange={handleChange}
+          placeholder="Faculty Name (optional)"
+          className="border border-blue-200 bg-transparent rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1 min-w-[150px]"
         />
         <select
           name="type"
@@ -148,7 +157,7 @@ const ContributeForm = ({
       </label>
       <div>
         <div className="font-semibold mb-1">
-          Upload Images (jpg/png/webp, max 3MB each):
+          Upload Images (jpg/png/webp, max 10MB each):
         </div>
         <ReactSortable
           tag="div"
@@ -192,6 +201,14 @@ const ContributeForm = ({
           />
         </ReactSortable>
       </div>
+      <button
+        type="button"
+        className="w-full mt-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-lg shadow flex items-center justify-center gap-2 disabled:opacity-60"
+        onClick={onCheckDuplicate}
+        disabled={checkingDuplicate}
+      >
+        {checkingDuplicate ? "Checking..." : "Check for Duplicates"}
+      </button>
     </div>
   );
 };

@@ -16,15 +16,28 @@ import ImagePreviewModal from "./Contribute/ImagePreviewModal";
 import { auth, googleProvider } from "../firebase.config";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  getDocs,
+  query,
+  where,
+  or,
+  and,
+} from "firebase/firestore";
 import { db } from "../firebase.config";
 import MyContributions from "./Contribute/MyContributions";
+import Lottie from "lottie-react";
+import uploadingAnimation from "./Contribute/kJh9itEXgv.json";
+import DuplicateCheckResults from "./Contribute/DuplicateCheckResults";
 
 const Contribute = () => {
   const [user, setUser] = useState(null); // { name, email, photo }
   const [form, setForm] = useState({
     courseCode: "",
     courseName: "",
+    facultyName: "",
     type: "",
     semester: "",
     year: "",
@@ -43,6 +56,8 @@ const Contribute = () => {
   const lastPosRef = useRef(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [pendingGoogleUser, setPendingGoogleUser] = useState(null);
+  const [duplicateResults, setDuplicateResults] = useState([]);
+  const [checkingDuplicate, setCheckingDuplicate] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (profile) => {
@@ -99,21 +114,44 @@ const Contribute = () => {
   // Handle image upload
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    const validFiles = files.filter(
-      (file) =>
-        ["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(
-          file.type
-        ) && file.size < 3 * 1024 * 1024
-    );
-    if (validFiles.length !== files.length) {
-      toast.error(
-        "Some files were invalid (type/size). Only jpg/png/webp <3MB allowed."
-      );
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+
+    const validFiles = [];
+    const errors = [];
+
+    files.forEach((file) => {
+      // Check file type
+      if (!allowedTypes.includes(file.type)) {
+        errors.push(
+          `${file.name}: Invalid file type. Only JPG, PNG, and WebP are allowed.`
+        );
+        return;
+      }
+
+      // Check file size
+      if (file.size > maxSize) {
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(1);
+        errors.push(
+          `${file.name}: File too large (${sizeInMB}MB). Maximum size is 10MB.`
+        );
+        return;
+      }
+
+      validFiles.push(file);
+    });
+
+    // Show specific errors if any
+    if (errors.length > 0) {
+      errors.forEach((error) => toast.error(error));
     }
+
+    // Add valid files
     validFiles.forEach((file) => {
       const url = URL.createObjectURL(file);
       setForm((f) => ({ ...f, images: [...f.images, { file, url }] }));
     });
+
     // Reset file input so same file can be re-added if removed
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -174,7 +212,6 @@ const Contribute = () => {
       // 1. Upload images to imgbb
       const imgbbApiKey =
         import.meta.env.VITE_IMGBB_API_KEY || process.env.VITE_IMGBB_API_KEY;
-      console.log("[imgbb] Using API key:", imgbbApiKey);
       const uploadedImages = [];
       for (const [idx, img] of form.images.entries()) {
         console.log(`[imgbb] Uploading image #${idx + 1}...`, img.file);
@@ -211,6 +248,7 @@ const Contribute = () => {
       const submission = {
         courseCode: form.courseCode,
         courseName: form.courseName,
+        facultyName: form.facultyName,
         type: form.type,
         semester: form.semester,
         year: form.year,
@@ -219,7 +257,8 @@ const Contribute = () => {
         contributor: user.name,
         email: user.email,
         uploadTime: serverTimestamp(), // Only for questions
-        approved: true,
+        approved: false,
+        status: "pending",
         views: 0,
         likes: 0,
         comments: [],
@@ -242,13 +281,14 @@ const Contribute = () => {
           },
         ],
       });
-      // 4. Save to questions (with serverTimestamp)
-      await addDoc(collection(db, "questions"), submission);
-      console.log("[Firestore] Saved successfully.");
-      toast.success("Submitted successfully!");
+      // 4. Save to preQuestionsPending (with serverTimestamp)
+      await addDoc(collection(db, "preQuestionsPending"), submission);
+      console.log("[Firestore] Saved to preQuestionsPending successfully.");
+      toast.success("Submitted successfully! Pending admin approval.");
       setForm({
         courseCode: "",
         courseName: "",
+        facultyName: "",
         type: "",
         semester: "",
         year: "",
@@ -264,8 +304,102 @@ const Contribute = () => {
     setLoading(false);
   };
 
+  // Duplicate check logic
+  const handleCheckDuplicate = async () => {
+    setCheckingDuplicate(true);
+    setDuplicateResults([]);
+    try {
+      const filters = [];
+      if (form.courseCode) filters.push(where("courseCode", ">=", "")); // fetch all for custom match
+      let q = query(collection(db, "questions"), ...filters);
+      const formFields = [
+        "courseCode",
+        "courseName",
+        "facultyName",
+        "type",
+        "semester",
+        "year",
+      ];
+      const nonEmptyFields = formFields.filter(
+        (f) => form[f] && form[f].toString().trim() !== ""
+      );
+      const totalFields = nonEmptyFields.length;
+      if (totalFields === 0) {
+        setDuplicateResults([]);
+        setCheckingDuplicate(false);
+        toast.error("Please fill at least one field to check for duplicates.");
+        return;
+      }
+      const minMatch = Math.ceil(totalFields * 0.8);
+      const snap = await getDocs(q);
+      let docs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      docs = docs.filter((d) => {
+        let matchCount = 0;
+        nonEmptyFields.forEach((f) => {
+          if (
+            d[f] &&
+            (d[f]
+              .toString()
+              .toLowerCase()
+              .includes(form[f].toString().toLowerCase()) ||
+              form[f]
+                .toString()
+                .toLowerCase()
+                .includes(d[f].toString().toLowerCase()))
+          ) {
+            matchCount++;
+          }
+        });
+        return matchCount >= minMatch;
+      });
+      setDuplicateResults(docs);
+      if (docs.length > 0) {
+        toast.error(
+          "Possible duplicates found! Please review the results below before submitting."
+        );
+      } else {
+        toast.success(
+          "No duplicates found. You can proceed to submit your contribution."
+        );
+      }
+    } catch (e) {
+      toast.error(
+        "Possible duplicates found! Please review the results below before submitting."
+      );
+    }
+    setCheckingDuplicate(false);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4">
+      {/* Uploading Lottie Popup */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white rounded-xl shadow-2xl p-6 flex flex-col items-center max-w-xs w-full"
+              initial={{ scale: 0.8, y: 40 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 40 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <Lottie
+                animationData={uploadingAnimation}
+                loop={true}
+                style={{ width: 120, height: 120 }}
+              />
+              <div className="mt-4 text-blue-700 font-semibold text-lg text-center">
+                Uploading your question...
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="bg-white rounded-xl shadow-2xl p-6 mb-8 flex flex-col items-center w-full max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-4 flex justify-center items-center gap-2 text-blue-700">
           <FaUpload className="text-blue-400" /> Share a Previous Semester
@@ -348,6 +482,8 @@ const Contribute = () => {
               handleRemoveImage={handleRemoveImage}
               handlePreviewImage={handlePreviewImage}
               fileInputRef={fileInputRef}
+              onCheckDuplicate={handleCheckDuplicate}
+              checkingDuplicate={checkingDuplicate}
             />
             <div className="mb-8">
               <div className="mb-2 text-base text-gray-600 font-semibold">
@@ -401,6 +537,7 @@ const Contribute = () => {
               </motion.button>
             </div>
           </div>
+          <DuplicateCheckResults results={duplicateResults} />
         </>
       )}
       {imgModalIdx !== null && (

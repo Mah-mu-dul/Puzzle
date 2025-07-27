@@ -44,6 +44,7 @@ const Card = ({ question, onImageClick, imagePreviewModal }) => {
   const {
     courseCode,
     courseName,
+    facultyName,
     images = [],
     semester,
     year,
@@ -244,6 +245,11 @@ const Card = ({ question, onImageClick, imagePreviewModal }) => {
             {semester} {year}
           </span>
         </div>
+        {facultyName && (
+          <div className="text-xs text-purple-600 font-medium mb-1">
+            Faculty: {facultyName}
+          </div>
+        )}
         <span className=" text-xs text-gray-400">{getDateString()}</span>
         <div className="flex items-center gap-2 mt-1">
           <span className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold shadow-sm">

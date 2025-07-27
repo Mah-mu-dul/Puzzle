@@ -25,6 +25,7 @@ import { toast } from "react-hot-toast";
 import ContributeForm from "./Contribute/ContributeForm";
 import { auth, googleProvider } from "../firebase.config";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import PendingQuestionsAdminPortal from "../components/admin/PendingQuestionsAdminPortal";
 
 const CARDS_PER_PAGE = 8;
 const SUPER_ADMIN_EMAIL = "work.mahmudulhasan@gmail.com";
@@ -89,6 +90,7 @@ const SuperAdminMahmudul = () => {
       !search ||
       q.courseName?.toLowerCase().includes(s) ||
       q.courseCode?.toLowerCase().includes(s) ||
+      q.facultyName?.toLowerCase().includes(s) ||
       q.type?.toLowerCase().includes(s) ||
       keywordMatch
     );
@@ -109,17 +111,39 @@ const SuperAdminMahmudul = () => {
   // Handle image upload in edit
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
-    const validFiles = files.filter(
-      (file) =>
-        ["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(
-          file.type
-        ) && file.size < 3 * 1024 * 1024
-    );
-    if (validFiles.length !== files.length) {
-      toast.error(
-        "Some files were invalid (type/size). Only jpg/png/webp <3MB allowed."
-      );
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+
+    const validFiles = [];
+    const errors = [];
+
+    files.forEach((file) => {
+      // Check file type
+      if (!allowedTypes.includes(file.type)) {
+        errors.push(
+          `${file.name}: Invalid file type. Only JPG, PNG, and WebP are allowed.`
+        );
+        return;
+      }
+
+      // Check file size
+      if (file.size > maxSize) {
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(1);
+        errors.push(
+          `${file.name}: File too large (${sizeInMB}MB). Maximum size is 10MB.`
+        );
+        return;
+      }
+
+      validFiles.push(file);
+    });
+
+    // Show specific errors if any
+    if (errors.length > 0) {
+      errors.forEach((error) => toast.error(error));
     }
+
+    // Add valid files
     validFiles.forEach((file) => {
       const url = URL.createObjectURL(file);
       setEditData((f) => ({
@@ -188,6 +212,7 @@ const SuperAdminMahmudul = () => {
       [
         "courseCode",
         "courseName",
+        "facultyName",
         "type",
         "semester",
         "year",
@@ -305,11 +330,12 @@ const SuperAdminMahmudul = () => {
       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
         Super Admin: All Previous Semester Questions
       </h1>
+      <PendingQuestionsAdminPortal />
       <div className="flex items-center gap-2 mb-4">
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Search by course name, code, type, or keyword..."
+            placeholder="Search by course name, code, faculty name, type, or keyword..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
